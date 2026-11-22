@@ -23,7 +23,8 @@ onMounted(async () => {
 </script>
 <template>
   <section class="cart-page">
-    <h1>Meu carrinho</h1>
+    <span class="section-eyebrow">Falta pouco para seu doce momento</span>
+    <h1>Meu carrinho ♡</h1>
     <p class="muted">O preço final e a disponibilidade serão recalculados antes do pedido.</p>
     <p v-if="loading" role="status">Carregando itens...</p>
     <p v-if="error" role="alert" class="error">{{ error }}</p>
@@ -44,8 +45,13 @@ onMounted(async () => {
   </section>
 </template>
 <style scoped>
-.cart-page { padding: 2rem 0; }
-.cart-line { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+.cart-page { padding: 2.5rem 0; max-width: 900px; }
+.cart-page h1 { margin: .5rem 0 1rem; font-size: clamp(2.2rem,5vw,3.4rem); }
+.cart-line { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 1rem; margin-bottom: 1rem; }
 .cart-line h2 { font-size: 1.15rem; }
-.cart-line input { width: 72px; padding: .6rem; }
+.cart-line label { display: grid; gap: .3rem; font-weight: 700; }
+.cart-line input { width: 82px; padding: .6rem; }
+.cart-line button { border: 1px solid #eac8d6; padding: .6rem .9rem;
+  border-radius: 10px; color: #a52d53; background: var(--color-soft); }
 </style>
