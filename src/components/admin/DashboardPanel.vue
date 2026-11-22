@@ -57,10 +57,11 @@ onMounted(load);
         </article>
       </div>
       <section class="card">
-        <h3>Produtos mais pedidos (quantidades)</h3>
+        <h3>Produtos presentes em mais pedidos</h3>
+        <p class="muted">Cada pedido conta uma única vez por produto, independentemente da quantidade de unidades.</p>
         <p v-if="!data.top_products.length">Sem itens no período.</p>
         <p v-for="item in data.top_products" :key="item.product_name_snapshot">
-          {{ item.product_name_snapshot }}: {{ item.quantity }}
+          {{ item.product_name_snapshot }}: {{ item.order_count }} {{ item.order_count === 1 ? "pedido" : "pedidos" }}
         </p>
       </section>
     </template>
