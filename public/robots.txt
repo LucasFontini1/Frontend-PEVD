@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /checkout
+Disallow: /carrinho
+Disallow: /meus-pedidos
+Disallow: /pedido-confirmado
+Disallow: /atendimento/duvidas
+Disallow: /encomendas-personalizadas
+Disallow: /entrar
+Disallow: /cadastro
+
+Sitemap: https://penseiemvocesdoces.vercel.app/sitemap.xml
