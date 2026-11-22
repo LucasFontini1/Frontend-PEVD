@@ -42,6 +42,7 @@ onMounted(load)
     <p v-if="!entries.length">Nenhuma solicitação de orçamento.</p>
     <article v-for="quote in entries" :key="quote.id" class="card">
       <h3>{{ quote.title }}</h3>
+      <p class="muted">Cliente #{{ quote.user }}</p>
       <p>{{ quote.details }}</p>
       <p>{{ quote.flavor }} · {{ quote.portions }} porções · {{ quote.desired_date }}</p>
       <p>Status: {{ quote.status }}</p>
