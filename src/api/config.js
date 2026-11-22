@@ -1,59 +1,118 @@
-import axios from 'axios'
-import { toast, setOverlay } from '../utils/feedback'
+import axios from "axios";
+import { toast, setOverlay } from "../utils/feedback";
 // Em DEV, manter a mesma hostname do Vite para o cookie SameSite=Lax funcionar.
-const localHost = typeof window !== 'undefined' && ['localhost', '127.0.0.1'].includes(window.location.hostname)
-  ? window.location.hostname : '127.0.0.1'
-const baseURL = import.meta.env.VITE_API_BASE_URL ||
-  `http://${localHost}:8000/api/`
-export const api = axios.create({ baseURL, withCredentials: true })
-export const sessionApi = axios.create({ baseURL, withCredentials: true })
-let accessToken = null
-let refreshing = null
-let csrfToken = ''
-let csrfRequest = null
+const localHost =
+  typeof window !== "undefined" &&
+  ["localhost", "127.0.0.1"].includes(window.location.hostname)
+    ? window.location.hostname
+    : "127.0.0.1";
+const baseURL =
+  import.meta.env.VITE_API_BASE_URL || `http://${localHost}:8000/api/`;
+export const api = axios.create({ baseURL, withCredentials: true });
+export const sessionApi = axios.create({ baseURL, withCredentials: true });
+let accessToken = null;
+let refreshing = null;
+let csrfToken = "";
+let csrfRequest = null;
 async function ensureCsrf() {
-  if (csrfToken) return csrfToken
-  if (!csrfRequest) csrfRequest = sessionApi.get('token/csrf/')
-    .then(({ data }) => { csrfToken = data.csrf_token; return csrfToken })
-    .finally(() => { csrfRequest = null })
-  return csrfRequest
+  if (csrfToken) return csrfToken;
+  if (!csrfRequest)
+    csrfRequest = sessionApi
+      .get("token/csrf/")
+      .then(({ data }) => {
+        csrfToken = data.csrf_token;
+        return csrfToken;
+      })
+      .finally(() => {
+        csrfRequest = null;
+      });
+  return csrfRequest;
 }
-export function setAccessToken(token) { accessToken = token || null }
+export function setAccessToken(token) {
+  accessToken = token || null;
+}
 function getCsrfToken() {
-  return csrfToken || document.cookie.split('; ').find(x => x.startsWith('pv_csrf='))?.split('=').slice(1).join('=') || ''
+  return (
+    csrfToken ||
+    document.cookie
+      .split("; ")
+      .find((x) => x.startsWith("pv_csrf="))
+      ?.split("=")
+      .slice(1)
+      .join("=") ||
+    ""
+  );
 }
-export async function prepareCsrf() { await ensureCsrf() }
-export function csrfHeader() { return { 'X-CSRFToken': getCsrfToken() } }
+export async function prepareCsrf() {
+  await ensureCsrf();
+}
+export function csrfHeader() {
+  return { "X-CSRFToken": getCsrfToken() };
+}
 export async function renewSession() {
   if (!refreshing) {
-    refreshing = ensureCsrf().then(() => sessionApi.post('token/refresh/', {}, { headers: csrfHeader() }))
-      .then(({ data }) => { setAccessToken(data.access); return data.access })
-      .finally(() => { refreshing = null })
+    refreshing = ensureCsrf()
+      .then(() =>
+        sessionApi.post("token/refresh/", {}, { headers: csrfHeader() }),
+      )
+      .then(({ data }) => {
+        setAccessToken(data.access);
+        return data.access;
+      })
+      .finally(() => {
+        refreshing = null;
+      });
   }
-  return refreshing
+  return refreshing;
 }
 export async function endSession() {
-  try { await ensureCsrf(); await sessionApi.post('token/logout/', {}, { headers: csrfHeader() }) }
-  finally { setAccessToken(null) }
-}
-api.interceptors.request.use(config => {
-  if (config.method && config.method !== 'get') { config._showOverlay = true; setOverlay(true) }
-  if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`
-  return config
-})
-api.interceptors.response.use(response => {
-  if (response.config._showOverlay) setOverlay(false)
-  return response
-}, async error => {
-  if (error.config?._showOverlay) { setOverlay(false); error.config._showOverlay = false }
-  if (error.response?.status !== 401) toast(error.response?.data?.detail || 'Não foi possível concluir a operação.', 'error')
-  const original = error.config
-  if (error.response?.status !== 401 || !original || original._retry ||
-      original.url?.includes('token/') || original.url?.includes('registro/')) throw error
-  original._retry = true
   try {
-    const token = await renewSession()
-    original.headers.Authorization = `Bearer ${token}`
-    return await api(original)
-  } catch (refreshError) { setAccessToken(null); throw refreshError }
-})
+    await ensureCsrf();
+    await sessionApi.post("token/logout/", {}, { headers: csrfHeader() });
+  } finally {
+    setAccessToken(null);
+  }
+}
+api.interceptors.request.use((config) => {
+  if (config.method && config.method !== "get") {
+    config._showOverlay = true;
+    setOverlay(true);
+  }
+  if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`;
+  return config;
+});
+api.interceptors.response.use(
+  (response) => {
+    if (response.config._showOverlay) setOverlay(false);
+    return response;
+  },
+  async (error) => {
+    if (error.config?._showOverlay) {
+      setOverlay(false);
+      error.config._showOverlay = false;
+    }
+    if (error.response?.status !== 401)
+      toast(
+        error.response?.data?.detail || "Não foi possível concluir a operação.",
+        "error",
+      );
+    const original = error.config;
+    if (
+      error.response?.status !== 401 ||
+      !original ||
+      original._retry ||
+      original.url?.includes("token/") ||
+      original.url?.includes("registro/")
+    )
+      throw error;
+    original._retry = true;
+    try {
+      const token = await renewSession();
+      original.headers.Authorization = `Bearer ${token}`;
+      return await api(original);
+    } catch (refreshError) {
+      setAccessToken(null);
+      throw refreshError;
+    }
+  },
+);

@@ -15,7 +15,10 @@ async function logout() {
   <a class="skip" href="#conteudo">Pular para o conteúdo</a>
   <div class="topbar">
     <div class="container top-inner">
-      <span><i class="mdi mdi-heart-outline" aria-hidden="true"></i> Doces para tornar seus momentos mais especiais</span>
+      <span
+        ><i class="mdi mdi-heart-outline" aria-hidden="true"></i> Doces para
+        tornar seus momentos mais especiais</span
+      >
       <span v-if="brand.brand.phone">Atendimento: {{ brand.brand.phone }}</span>
       <RouterLink to="/atendimento">Dúvidas frequentes</RouterLink>
     </div>
@@ -29,7 +32,9 @@ async function logout() {
           alt=""
           class="logo"
         />
-        <span v-else aria-hidden="true" class="brand-icon"><i class="mdi mdi-heart-outline"></i></span>
+        <span v-else aria-hidden="true" class="brand-icon"
+          ><i class="mdi mdi-heart-outline"></i
+        ></span>
         <span class="brand-name">{{ brand.brand.name }}</span>
       </RouterLink>
       <div class="links">
@@ -50,7 +55,10 @@ async function logout() {
           >Entrar</RouterLink
         >
         <button v-else class="account" @click="logout">Sair</button>
-        <RouterLink to="/carrinho" class="cart-link"><i class="mdi mdi-cart-outline" aria-hidden="true"></i> Carrinho</RouterLink>
+        <RouterLink to="/carrinho" class="cart-link"
+          ><i class="mdi mdi-cart-outline" aria-hidden="true"></i>
+          Carrinho</RouterLink
+        >
       </div>
     </nav>
   </header>

@@ -1,46 +1,84 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
-import { commercialApi } from '../../api/commercialApi'
-import { apiMessage } from '../../utils/catalog'
+import { computed, onMounted, ref } from "vue";
+import { commercialApi } from "../../api/commercialApi";
+import { apiMessage } from "../../utils/catalog";
 
-const contacts = ref([])
-const search = ref('')
-const visible = computed(() => contacts.value.filter(item =>
-  `${item.name} ${item.subject}`.toLocaleLowerCase('pt-BR').includes(search.value.toLocaleLowerCase('pt-BR'))))
-const error = ref('')
-const busy = ref(false)
+const contacts = ref([]);
+const search = ref("");
+const visible = computed(() =>
+  contacts.value.filter((item) =>
+    `${item.name} ${item.subject}`
+      .toLocaleLowerCase("pt-BR")
+      .includes(search.value.toLocaleLowerCase("pt-BR")),
+  ),
+);
+const error = ref("");
+const busy = ref(false);
 async function load() {
-  error.value = ''
-  try { const { data } = await commercialApi.contacts({ page_size: 100 }); contacts.value = data.results || data }
-  catch (err) { error.value = apiMessage(err) }
+  error.value = "";
+  try {
+    const { data } = await commercialApi.contacts({ page_size: 100 });
+    contacts.value = data.results || data;
+  } catch (err) {
+    error.value = apiMessage(err);
+  }
 }
 async function markHandled(id) {
-  busy.value = true; error.value = ''
-  try { await commercialApi.markHandled(id); await load() }
-  catch (err) { error.value = apiMessage(err) }
-  finally { busy.value = false }
+  busy.value = true;
+  error.value = "";
+  try {
+    await commercialApi.markHandled(id);
+    await load();
+  } catch (err) {
+    error.value = apiMessage(err);
+  } finally {
+    busy.value = false;
+  }
 }
-onMounted(load)
+onMounted(load);
 </script>
 <template>
   <section class="contacts">
     <h2>Formulários de contato</h2>
-    <p>Essas mensagens não geram uma conversa privada. Para acompanhar respostas no site, utilize tickets.</p>
+    <p>
+      Essas mensagens não geram uma conversa privada. Para acompanhar respostas
+      no site, utilize tickets.
+    </p>
     <p v-if="error" role="alert" class="error">{{ error }}</p>
     <p v-if="!contacts.length">Nenhum contato registrado.</p>
-    <label class="field">Pesquisar nome ou assunto
-      <input v-model.trim="search" type="search" placeholder="Cliente ou mensagem" />
+    <label class="field"
+      >Pesquisar nome ou assunto
+      <input
+        v-model.trim="search"
+        type="search"
+        placeholder="Cliente ou mensagem"
+      />
     </label>
     <article v-for="item in visible" :key="item.id" class="card">
       <h3>{{ item.subject }}</h3>
-      <p><strong>{{ item.name }}</strong> · {{ item.email }}</p>
+      <p>
+        <strong>{{ item.name }}</strong> · {{ item.email }}
+      </p>
       <p class="body">{{ item.message }}</p>
-      <p>{{ item.handled_at ? 'Tratado' : 'Aguardando atendimento' }}</p>
-      <button v-if="!item.handled_at" type="button" class="button-outline" :disabled="busy" @click="markHandled(item.id)">Marcar como tratado</button>
+      <p>{{ item.handled_at ? "Tratado" : "Aguardando atendimento" }}</p>
+      <button
+        v-if="!item.handled_at"
+        type="button"
+        class="button-outline"
+        :disabled="busy"
+        @click="markHandled(item.id)"
+      >
+        Marcar como tratado
+      </button>
     </article>
   </section>
 </template>
 <style scoped>
-.contacts { display: grid; gap: 1rem; }
-.body { white-space: pre-line; }
+.contacts {
+  display: grid;
+  gap: 1rem;
+}
+.body {
+  white-space: pre-line;
+}
 </style>
