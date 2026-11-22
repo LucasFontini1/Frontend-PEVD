@@ -11,8 +11,7 @@ import HomeBanners from '../components/storefront/HomeBanners.vue'
 const brand = useBrandStore()
 const catalog = useCatalogStore()
 const categoryError = ref('')
-const spotlight = computed(() => catalog.products.find(p => p.images?.[0]?.image))
-const spotlightImage = computed(() => imageUrl(spotlight.value?.images?.[0]?.image))
+const spotlightImage = computed(() => imageUrl(brand.brand.hero_image))
 onMounted(async () => {
   try { await catalog.loadCategories() }
   catch { categoryError.value = 'Não foi possível carregar as categorias.' }
@@ -36,12 +35,11 @@ onMounted(async () => {
       </div>
     </div>
     <div class="hero-art">
-      <RouterLink v-if="spotlightImage" :to="`/produto/${spotlight.slug}`" class="hero-photo">
-        <img :src="spotlightImage" :alt="spotlight.name" />
-        <span class="hero-label">{{ spotlight.name }}</span>
-      </RouterLink>
+      <div v-if="spotlightImage" class="hero-photo">
+        <img :src="spotlightImage" alt="Imagem principal da Pensei em Você Doces" />
+      </div>
       <div v-else class="hero-placeholder" aria-label="Ilustração de confeitaria">
-        <span aria-hidden="true">♡</span><span aria-hidden="true">🧁</span>
+        <span aria-hidden="true">♡</span><span aria-hidden="true">✿</span>
         <strong>Um mundo mais doce</strong>
       </div>
       <span aria-hidden="true" class="sparkle one">✧</span>

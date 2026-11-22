@@ -1,18 +1,19 @@
 <script setup>
 import { ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { toast } from '../../utils/feedback'
 import { useCartStore } from '../../stores/cartStore'
 
 const props = defineProps({ product: { type: Object, required: true } })
 const selected = ref({})
 const quantity = ref(props.product.minimum_quantity)
+const observation = ref('')
 watch(() => props.product, value => {
   selected.value = Object.fromEntries(value.option_groups.map(group => [group.id, []]))
   quantity.value = value.minimum_quantity
+  observation.value = ''
 }, { immediate: true })
 const error = ref('')
 const cart = useCartStore()
-const router = useRouter()
 
 function add() {
   error.value = ''
@@ -21,14 +22,15 @@ function add() {
     const ids = selected.value[group.id] || []
     if (group.required && !ids.length) {
       error.value = `Escolha uma opção de ${group.name}.`
+      toast(error.value, 'error')
       return
     }
     choices.push(...ids)
   }
   try {
-    cart.add(props.product.id, quantity.value, choices)
-    router.push('/carrinho')
-  } catch (err) { error.value = err.message }
+    cart.add(props.product.id, quantity.value, choices, observation.value)
+    toast('Produto adicionado ao carrinho!', 'success', { label: 'Ir ao carrinho', to: '/carrinho' })
+  } catch (err) { error.value = err.message; toast(error.value, 'error') }
 }
 function selectSingle(group, value) {
   selected.value[group.id] = value ? [Number(value)] : []
@@ -52,6 +54,9 @@ function selectSingle(group, value) {
         </select>
       </template>
     </fieldset>
+    <label class="field">Observações para sua encomenda
+      <textarea v-model.trim="observation" rows="3" maxlength="500" placeholder="Ex.: sem granulado, escrever uma mensagem..." />
+    </label>
     <label class="field">Quantidade
       <input v-model.number="quantity" type="number" :min="product.minimum_quantity" max="100" required />
     </label>

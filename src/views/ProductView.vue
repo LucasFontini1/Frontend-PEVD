@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import { catalogApi } from '../api/catalogApi'
 import AddToCartForm from '../components/cart/AddToCartForm.vue'
 import { apiMessage, currency, imageUrl } from '../utils/catalog'
+import { toast } from '../utils/feedback'
 
 const route = useRoute()
 const product = ref(null)
@@ -12,7 +13,7 @@ const error = ref('')
 async function load() {
   loading.value = true; error.value = ''; product.value = null
   try { product.value = (await catalogApi.product(route.params.slug)).data }
-  catch (err) { error.value = apiMessage(err) }
+  catch (err) { error.value = apiMessage(err); toast(error.value, 'error') }
   finally { loading.value = false }
 }
 onMounted(load)
@@ -21,7 +22,7 @@ watch(() => route.params.slug, load)
 <template>
   <section class="detail">
     <RouterLink class="back" to="/cardapio">← Voltar ao cardápio</RouterLink>
-    <p v-if="loading" role="status">Carregando detalhes...</p>
+    <div v-if="loading" class="detail-grid" role="status" aria-label="Carregando produto"><div class="skeleton skeleton-image"></div><div class="card"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-line" v-for="i in 5" :key="i"></div></div></div>
     <p v-else-if="error" role="alert" class="error">{{ error }}</p>
     <div v-else-if="product" class="detail-grid">
       <div>
@@ -41,18 +42,23 @@ watch(() => route.params.slug, load)
         <p v-if="product.ingredients"><strong>Ingredientes:</strong> {{ product.ingredients }}</p>
         <p v-if="product.allergen_info"><strong>Alergênicos:</strong> {{ product.allergen_info }}</p>
         <p v-if="product.conservation_info"><strong>Conservação:</strong> {{ product.conservation_info }}</p>
-        <section v-for="group in product.option_groups" :key="group.id">
+        <section v-for="group in product.option_groups.filter(group => !/extra/i.test(group.name))" :key="group.id">
           <h2>{{ group.name }}</h2>
           <p v-if="group.required" class="muted">Escolha obrigatória ao encomendar</p>
           <p v-for="option in group.options" :key="option.id">{{ option.name }} — + {{ currency(option.additional_price) }}</p>
         </section>
-        <AddToCartForm :product="product" />
+        <AddToCartForm :product="{ ...product, option_groups: product.option_groups.filter(group => !/extra/i.test(group.name)) }" />
       </div>
     </div>
   </section>
 </template>
 <style scoped>
 .detail { padding: 2rem 0 3rem; }
+.skeleton { background: linear-gradient(90deg, #f3e4e5 25%,#fff7f7 50%,#f3e4e5 75%); background-size: 200% 100%; animation: shimmer 1.3s infinite; border-radius: 12px; }
+.skeleton-image { aspect-ratio: 1; }
+.skeleton-title { height: 36px; width: 70%; margin-bottom: 2rem; }
+.skeleton-line { height: 18px; margin: 1rem 0; }
+@keyframes shimmer { to { background-position-x: -200%; } }
 .back { font-weight: 800; text-decoration: none; }
 .detail-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0,1fr); gap: 2rem; padding-top: 2rem; align-items: start; }
 .photos { display: grid; gap: 1rem; }

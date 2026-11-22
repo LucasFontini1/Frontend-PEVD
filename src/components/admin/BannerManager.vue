@@ -3,6 +3,8 @@ import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 import { commercialApi } from '../../api/commercialApi'
 import { adminCatalogApi } from '../../api/adminCatalogApi'
 import { apiMessage, imageUrl } from '../../utils/catalog'
+import ConfirmModal from '../layout/ConfirmModal.vue'
+import { toast } from '../../utils/feedback'
 
 const items = ref([])
 const editorElement = ref(null)
@@ -10,6 +12,7 @@ const search = ref('')
 const visible = computed(() => items.value.filter(item =>
   item.title.toLocaleLowerCase('pt-BR').includes(search.value.toLocaleLowerCase('pt-BR'))))
 const editing = ref(null)
+const pendingUnpublish = ref(null)
 const file = ref(null)
 const busy = ref(false)
 const error = ref('')
@@ -43,14 +46,15 @@ async function save() {
     }
     if (editing.value) await commercialApi.updateBanner(editing.value.id, data)
     else await commercialApi.createBanner(data)
-    reset(); await load()
+    reset(); toast('Banner salvo com sucesso.'); await load()
   } catch (err) { error.value = apiMessage(err) }
   finally { busy.value = false }
 }
-async function unpublish(id) {
-  if (!confirm('Retirar o banner da vitrine?')) return
-  try { await commercialApi.unpublishBanner(id); await load() }
-  catch (err) { error.value = apiMessage(err) }
+function unpublish(id) { pendingUnpublish.value = id }
+async function confirmUnpublish() {
+  if (!pendingUnpublish.value) return
+  try { await commercialApi.unpublishBanner(pendingUnpublish.value); pendingUnpublish.value = null; toast('Banner despublicado.'); await load() }
+  catch (err) { error.value = apiMessage(err); toast(error.value, 'error') }
 }
 onMounted(load)
 </script>
@@ -87,6 +91,7 @@ onMounted(load)
       </div>
       </div>
     </article>
+    <ConfirmModal :open="!!pendingUnpublish" title="Despublicar banner?" description="O banner não será mais exibido na vitrine." @confirm="confirmUnpublish" @cancel="pendingUnpublish = null" />
   </section>
 </template>
 <style scoped>

@@ -13,6 +13,7 @@ export const commercialApi = {
   closeTicket: id => api.post(`admin/support/tickets/${id}/close/`),
   quotes: params => api.get('admin/quotes/', { params }),
   propose: (id, data) => api.post(`admin/quotes/${id}/propose/`, data),
+  closeQuote: id => api.post(`admin/quotes/${id}/close/`),
   contacts: params => api.get('admin/contact/', { params }),
   markHandled: id => api.post(`admin/contact/${id}/mark-handled/`),
   banners: () => api.get('admin/banners/', { params: { page_size: 100 } }),

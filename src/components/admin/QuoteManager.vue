@@ -2,6 +2,8 @@
 import { computed, onMounted, ref } from 'vue'
 import { commercialApi } from '../../api/commercialApi'
 import { apiMessage, currency } from '../../utils/catalog'
+import ConfirmModal from '../layout/ConfirmModal.vue'
+import { toast } from '../../utils/feedback'
 const entries = ref([])
 const search = ref('')
 const visible = computed(() => entries.value.filter(item =>
@@ -12,6 +14,7 @@ const editing = ref(null)
 const price = ref('')
 const details = ref('')
 const validUntil = ref('')
+const closing = ref(null)
 async function load() {
   error.value = ''
   try { const { data } = await commercialApi.quotes({ page_size: 100 }); entries.value = data.results || data }
@@ -31,8 +34,20 @@ async function submit(quote) {
       proposed_details: details.value,
       valid_until: new Date(validUntil.value).toISOString(),
     })
-    editing.value = null; await load()
+    editing.value = null; toast('Proposta enviada com sucesso.'); await load()
   } catch (err) { error.value = apiMessage(err) }
+  finally { busy.value = false }
+}
+async function closeQuote() {
+  if (!closing.value) return
+  busy.value = true
+  try {
+    await commercialApi.closeQuote(closing.value)
+    closing.value = null
+    editing.value = null
+    toast('Proposta encerrada.')
+    await load()
+  } catch (err) { error.value = apiMessage(err); toast(error.value, 'error') }
   finally { busy.value = false }
 }
 onMounted(load)
@@ -53,7 +68,10 @@ onMounted(load)
       <p>{{ quote.flavor }} · {{ quote.portions }} porções · {{ quote.desired_date }}</p>
       <p>Status: {{ quote.status }}</p>
       <p v-if="quote.proposed_price !== null">Preço proposto: {{ currency(quote.proposed_price) }}</p>
-      <button v-if="['solicitado', 'proposto'].includes(quote.status)" type="button" class="button-outline" @click="edit(quote)">Preparar proposta</button>
+      <div class="quote-actions" v-if="['solicitado', 'proposto'].includes(quote.status)">
+        <button type="button" class="button-outline" @click="edit(quote)">Preparar proposta</button>
+        <button type="button" class="button-outline" @click="closing = quote.id">Fechar proposta</button>
+      </div>
       <form v-if="editing === quote.id" @submit.prevent="submit(quote)">
         <label class="field">Preço total (R$)<input v-model="price" type="number" min="0" step=".01" required /></label>
         <label class="field">Detalhes e condições
@@ -65,9 +83,11 @@ onMounted(load)
         <button class="button" :disabled="busy">{{ busy ? 'Salvando...' : 'Enviar proposta' }}</button>
       </form>
     </article>
+    <ConfirmModal :open="!!closing" title="Fechar proposta?" description="A proposta será encerrada e não poderá ser aceita pelo cliente." :busy="busy" @confirm="closeQuote" @cancel="closing = null" />
   </section>
 </template>
 <style scoped>
+.quote-actions { display: flex; gap: .75rem; flex-wrap: wrap; }
 .manager, form { display: grid; gap: 1rem; }
 textarea, input { padding: .7rem; border: 1px solid var(--color-border); border-radius: 8px; }
 </style>

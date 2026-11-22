@@ -5,11 +5,19 @@ import { useCartStore } from './cartStore'
 describe('cartStore', () => {
   beforeEach(() => { localStorage.clear(); setActivePinia(createPinia()) })
 
-  it('guarda apenas IDs, quantidades e opções, sem preço', async () => {
+  it('guarda IDs, quantidades, opções e observações, sem preço', async () => {
     const cart = useCartStore()
     cart.add(8, 2, [3, 1])
-    expect(cart.lines[0]).toEqual({ product_id: 8, quantity: 2, selected_option_ids: [1, 3] })
+    expect(cart.lines[0]).toEqual({ product_id: 8, quantity: 2, selected_option_ids: [1, 3], observation: '' })
     expect(JSON.stringify(cart.lines)).not.toContain('price')
+  })
+
+  it('preserva observações diferentes em linhas distintas', () => {
+    const cart = useCartStore()
+    cart.add(8, 1, [], 'Sem cobertura')
+    cart.add(8, 1, [], 'Com bilhete')
+    expect(cart.lines).toHaveLength(2)
+    expect(cart.lines[0].observation).toBe('Sem cobertura')
   })
 
   it('une linhas de mesma combinação e separa opções diferentes', () => {
