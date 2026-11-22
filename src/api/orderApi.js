@@ -6,6 +6,7 @@ export const orderApi = {
   submit: payload => api.post('orders/', payload),
   orders: () => api.get('orders/'),
   detail: code => api.get(`orders/${encodeURIComponent(code)}/`),
+  cancel: code => api.post(`orders/${encodeURIComponent(code)}/cancel-request/`),
   addresses: () => api.get('addresses/'),
   addAddress: payload => api.post('addresses/', payload),
   updateAddress: (id, payload) => api.patch(`addresses/${id}/`, payload),
