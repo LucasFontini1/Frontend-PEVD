@@ -43,6 +43,8 @@ const whatsapp = computed(
         <RouterLink to="/tutorial">Como usar o site</RouterLink>
         <RouterLink to="/contato">Contato</RouterLink>
         <RouterLink to="/meus-pedidos">Meus pedidos</RouterLink>
+        <RouterLink to="/termos-de-uso">Termos de Uso</RouterLink>
+        <RouterLink to="/politica-de-privacidade">Política de Privacidade</RouterLink>
       </nav>
       <div class="footer-links">
         <strong>Fale com a loja</strong>
