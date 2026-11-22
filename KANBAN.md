@@ -1,22 +1,21 @@
 # Kanban — Pensei em Você Doces (Frontend)
 
-> Quadro em Markdown para acompanhar as issues. **Não substitui um GitHub Project nativo.**
+> Quadro de acompanhamento em Markdown. **Ainda não é um GitHub Project nativo**, pois o conector não oferece sua criação.
 
 ## Backlog
-- [#2](https://github.com/LucasFontini1/Frontend-PEVD/issues/2) Finalizar recuperação e integração de cadastro
-- [#4](https://github.com/LucasFontini1/Frontend-PEVD/issues/4) Validar acessibilidade e navegação móvel
+- [#2](https://github.com/LucasFontini1/Frontend-PEVD/issues/2) Recuperação de senha, cadastro e verificação integrada
+- [#4](https://github.com/LucasFontini1/Frontend-PEVD/issues/4) Revisão de navegação móvel/acessibilidade
 
 ## To do
-- [#5](https://github.com/LucasFontini1/Frontend-PEVD/issues/5) Executar e aprovar lint, teste e build CI
+- [#5](https://github.com/LucasFontini1/Frontend-PEVD/issues/5) Ampliar testes UI/E2E para sessão e permissões
 
 ## In progress
-- [#1](https://github.com/LucasFontini1/Frontend-PEVD/issues/1) Fundação Vue/design system — [PR #6](https://github.com/LucasFontini1/Frontend-PEVD/pull/6)
-- [#3](https://github.com/LucasFontini1/Frontend-PEVD/issues/3) Store e refresh cookie integrado
+- [#3](https://github.com/LucasFontini1/Frontend-PEVD/issues/3) Validar Axios/Pinia/refresh contra API real
 
 ## In review
-- [PR #6](https://github.com/LucasFontini1/Frontend-PEVD/pull/6) (rascunho)
+- Integração end-to-end de frontend + backend em staging
 
-## Done
-- Nenhuma issue foi concluída e validada ainda.
+## Done (em dev, não em main)
+- [#1](https://github.com/LucasFontini1/Frontend-PEVD/issues/1) Fundação Vue, layout e tokens — PR #6, CI aprovado
 
-Fluxo: `main` → `dev` → `FEAT-N` → PR para `dev`. Não promover para main sem testes.
+Fluxo: `main` estável, `dev` para integração, `FEAT-N` a partir de dev. Não integrar main antes da Fase 1 validada.
