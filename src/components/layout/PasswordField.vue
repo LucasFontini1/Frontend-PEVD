@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, useId } from 'vue'
 
 defineProps({
   modelValue: { type: String, default: '' },
@@ -10,13 +10,15 @@ defineProps({
 })
 const emit = defineEmits(['update:modelValue'])
 const visible = ref(false)
+const inputId = useId()
 </script>
 
 <template>
-  <label class="field">
-    <span>{{ label }}</span>
+  <div class="field">
+    <label :for="inputId">{{ label }}</label>
     <span class="password-wrap">
       <input
+        :id="inputId"
         :value="modelValue"
         :type="visible ? 'text' : 'password'"
         :autocomplete="autocomplete"
@@ -35,7 +37,7 @@ const visible = ref(false)
         <span>{{ visible ? 'Ocultar' : 'Mostrar' }}</span>
       </button>
     </span>
-  </label>
+  </div>
 </template>
 
 <style scoped>
