@@ -8,11 +8,22 @@ const route = useRoute()
 const order = ref(null)
 const error = ref('')
 const loading = ref(false)
+const cancelling = ref(false)
 async function load() {
   loading.value = true; error.value = ''
   try { order.value = (await orderApi.detail(route.params.codigo)).data }
   catch (err) { order.value = null; error.value = apiMessage(err) }
   finally { loading.value = false }
+}
+async function cancel() {
+  if (!order.value || order.value.status !== 'aguardando_confirmacao') return
+  if (!confirm('Deseja cancelar este pedido antes da confirmação?')) return
+  cancelling.value = true; error.value = ''
+  try {
+    await orderApi.cancel(order.value.public_id)
+    await load()
+  } catch (err) { error.value = apiMessage(err) }
+  finally { cancelling.value = false }
 }
 onMounted(load)
 watch(() => route.params.codigo, load)
@@ -46,6 +57,7 @@ watch(() => route.params.codigo, load)
           <span v-if="entry.reason">: {{ entry.reason }}</span>
         </p>
       </section>
+      <button v-if="order.status === 'aguardando_confirmacao'" :disabled="cancelling" @click="cancel">Cancelar pedido ainda não confirmado</button>
       <RouterLink to="/meus-pedidos">Voltar aos meus pedidos</RouterLink>
     </template>
   </section>
