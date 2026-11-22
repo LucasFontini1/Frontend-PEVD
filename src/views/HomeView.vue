@@ -11,7 +11,6 @@ import HomeBanners from '../components/storefront/HomeBanners.vue'
 const brand = useBrandStore()
 const catalog = useCatalogStore()
 const categoryError = ref('')
-const spotlight = computed(() => catalog.products.find(p => p.images?.[0]?.image))
 const spotlightImage = computed(() => imageUrl(brand.brand.hero_image))
 onMounted(async () => {
   try { await catalog.loadCategories() }
