@@ -5,7 +5,8 @@ import { brandApi } from '../api/brandApi'
 const defaults = {
   name: 'Pensei em Você Doces',
   background_color: '#FFF5E9', primary_color: '#C96680', heading_color: '#704438',
-  logo: null,
+  logo: null, business_email: '', phone: '', pickup_address: '', instagram_url: '',
+  announcement: '', response_hours: null,
 }
 export const useBrandStore = defineStore('brand', () => {
   const brand = ref({ ...defaults })
