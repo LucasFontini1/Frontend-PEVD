@@ -15,7 +15,11 @@ const router = createRouter({
     { path: '/categoria/:slug', name: 'category', component: CatalogView },
     { path: '/produto/:slug', name: 'product', component: ProductView },
     { path: '/admin', name: 'admin', component: () => import('../views/AdminView.vue'), meta: { admin: true } },
-    { path: '/checkout', name: 'checkout', component: () => import('../views/UnavailableView.vue'), meta: { auth: true } },
+    { path: '/carrinho', name: 'cart', component: () => import('../views/CartView.vue') },
+    { path: '/checkout', name: 'checkout', component: () => import('../views/CheckoutView.vue'), meta: { auth: true } },
+    { path: '/meus-pedidos', name: 'orders', component: () => import('../views/OrdersView.vue'), meta: { auth: true } },
+    { path: '/meus-pedidos/:codigo', name: 'orderDetail', component: () => import('../views/OrderDetailView.vue'), meta: { auth: true } },
+    { path: '/pedido-confirmado/:codigo', name: 'orderSuccess', component: () => import('../views/OrderDetailView.vue'), meta: { auth: true } },
     { path: '/:pathMatch(.*)*', name: 'notFound', component: () => import('../views/NotFoundView.vue') },
   ],
 })
