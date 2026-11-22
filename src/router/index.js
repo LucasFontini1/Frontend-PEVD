@@ -5,6 +5,7 @@ import LoginView from "../views/LoginView.vue";
 import RegisterView from "../views/RegisterView.vue";
 import CatalogView from "../views/CatalogView.vue";
 import ProductView from "../views/ProductView.vue";
+import { applyRouteSeo } from "../utils/seo";
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -106,4 +107,5 @@ router.beforeEach(async (to) => {
   }
   return true;
 });
+router.afterEach((to) => applyRouteSeo(to));
 export default router;
