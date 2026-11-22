@@ -1,3 +1,5 @@
+> **Fase 2 — Vitrine e gestão de catálogo:** consulte [docs/FASE2.md](docs/FASE2.md). As rotas `/cardapio`, `/categoria/:slug`, `/produto/:slug` e `/admin` consultam APIs reais. Sem produtos fictícios, sem carrinho/checkout da Fase 3.
+
 # Pensei em Você Doces — Frontend
 
 Vue 3, Vite, Pinia, Vue Router e Axios. Aplicação da **Fase 1**, sem catálogo nem pedidos simulados.
