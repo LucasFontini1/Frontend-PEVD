@@ -1,24 +1,20 @@
 # Kanban — Pensei em Você Doces (Frontend)
 
-Este quadro Markdown registra a evolução. Não há GitHub Project nativo criado pela conexão atual.
+A conexão GitHub disponível gerencia issues e PRs, mas não cria um GitHub Project nativo; este arquivo acompanha o quadro.
 
-## Concluído em dev — Fase 3
-- [#11](https://github.com/LucasFontini1/Frontend-PEVD/issues/11) Carrinho visitante persistente com IDs/opções/quantidades.
-- [#12](https://github.com/LucasFontini1/Frontend-PEVD/issues/12) Checkout com cotação server-side, endereço, retirada/entrega, revisão e UUID idempotente.
-- [#13](https://github.com/LucasFontini1/Frontend-PEVD/issues/13) Meus pedidos, confirmação, histórico, cancelamento e painel comercial.
-- [PR #14](https://github.com/LucasFontini1/Frontend-PEVD/pull/14) Merge para dev após build, lint e Vitest.
+## Concluído em dev — Fase 4
+- [#16](https://github.com/LucasFontini1/Frontend-PEVD/issues/16): FAQ pesquisável e contato público.
+- [#17](https://github.com/LucasFontini1/Frontend-PEVD/issues/17): tickets privados e mensagens de resposta.
+- [#18](https://github.com/LucasFontini1/Frontend-PEVD/issues/18): orçamento personalizado e aceite explícito.
+- [#19](https://github.com/LucasFontini1/Frontend-PEVD/issues/19): painel FAQ, tickets, orçamentos, contato, banners e dashboard real.
+- [PR #20](https://github.com/LucasFontini1/Frontend-PEVD/pull/20): integrado na dev com lint, Vitest e build.
 
-## Em homologação
-- [#15](https://github.com/LucasFontini1/Frontend-PEVD/issues/15) E2E real em staging, cookies HTTPS/CORS e testes Android/iOS.
+## Em homologação / backlog
+- [#21](https://github.com/LucasFontini1/Frontend-PEVD/issues/21): E2E atendimento e conteúdo real em staging.
+- [#15](https://github.com/LucasFontini1/Frontend-PEVD/issues/15): E2E checkout e acessibilidade.
+- [#2](https://github.com/LucasFontini1/Frontend-PEVD/issues/2), [#3](https://github.com/LucasFontini1/Frontend-PEVD/issues/3), [#4](https://github.com/LucasFontini1/Frontend-PEVD/issues/4), [#5](https://github.com/LucasFontini1/Frontend-PEVD/issues/5): pendências de Fase 1.
 
-## Pendências anteriores — Fase 1
-- [#2](https://github.com/LucasFontini1/Frontend-PEVD/issues/2) Verificação de email e recuperação.
-- [#3](https://github.com/LucasFontini1/Frontend-PEVD/issues/3) Testes de sessão em deployment.
-- [#4](https://github.com/LucasFontini1/Frontend-PEVD/issues/4) Acessibilidade e revisão responsiva.
-- [#5](https://github.com/LucasFontini1/Frontend-PEVD/issues/5) Testes E2E integrados.
+## Próxima fase
+- Fase 5: PWA offline somente para conteúdo público, SEO e dados locais reais, políticas legais revisadas, staging e deploy.
 
-## Em espera
-- Fase 4: FAQ/tickets, suporte e encomendas personalizadas.
-- Fase 5: PWA, SEO, conformidade e lançamento.
-
-**Não integrar main até homologação integral.** O checkout não realiza cobranças.
+**main bloqueada até homologação.** Não inserir avaliações, prazos e promoções inventados.
