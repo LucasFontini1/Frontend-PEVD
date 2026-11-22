@@ -4,6 +4,7 @@ import { brandApi } from "../../api/brandApi";
 import { adminCatalogApi } from "../../api/adminCatalogApi";
 import { useBrandStore } from "../../stores/brandStore";
 import { apiMessage, imageUrl } from "../../utils/catalog";
+import ImageCropInput from "../layout/ImageCropInput.vue";
 
 const brandStore = useBrandStore();
 const form = reactive({
@@ -108,24 +109,14 @@ async function submit() {
       :src="preview"
       alt="Logo atual da loja"
     />
-    <label class="field"
-      >Nova logo<input
-        type="file"
-        accept="image/png,image/jpeg,image/webp"
-        @change="logo = $event.target.files[0]"
-    /></label>
+    <ImageCropInput v-model="logo" label="Nova logo" :aspect-ratio="1" />
     <img
       v-if="heroPreview"
       class="hero-preview"
       :src="heroPreview"
       alt="Imagem principal atual"
     />
-    <label class="field"
-      >Imagem principal da home<input
-        type="file"
-        accept="image/png,image/jpeg,image/webp"
-        @change="heroImage = $event.target.files[0]"
-    /></label>
+    <ImageCropInput v-model="heroImage" label="Imagem principal da home" :aspect-ratio="1" />
     <p v-if="error" class="error" role="alert">{{ error }}</p>
     <p v-if="success" role="status">{{ success }}</p>
     <button class="button" :disabled="busy">

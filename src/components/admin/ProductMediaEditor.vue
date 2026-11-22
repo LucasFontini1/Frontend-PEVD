@@ -2,6 +2,7 @@
 import { onMounted, ref, watch } from "vue";
 import { adminCatalogApi } from "../../api/adminCatalogApi";
 import { apiMessage, imageUrl } from "../../utils/catalog";
+import ImageCropInput from "../layout/ImageCropInput.vue";
 
 const props = defineProps({ productId: { type: Number, required: true } });
 const photos = ref([]);
@@ -65,13 +66,7 @@ async function remove(id) {
       </div>
     </div>
     <form @submit.prevent="upload">
-      <label class="field"
-        >Imagem<input
-          type="file"
-          accept="image/png,image/jpeg,image/webp,image/gif"
-          required
-          @change="file = $event.target.files[0]"
-      /></label>
+      <ImageCropInput v-model="file" label="Imagem do produto" :aspect-ratio="1" />
       <label class="field"
         >Descrição acessível<input
           v-model.trim="altText"

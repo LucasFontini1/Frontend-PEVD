@@ -2,6 +2,7 @@
 import { reactive, ref, watch } from "vue";
 import { adminCatalogApi } from "../../api/adminCatalogApi";
 import { apiMessage } from "../../utils/catalog";
+import ImageCropInput from "../layout/ImageCropInput.vue";
 
 const props = defineProps({ selected: { type: Object, default: null } });
 const emit = defineEmits(["saved", "cancel"]);
@@ -64,12 +65,7 @@ async function submit() {
     <label class="field"
       >Ordem<input v-model.number="form.sort_order" type="number" min="0"
     /></label>
-    <label class="field"
-      >Imagem da categoria<input
-        type="file"
-        accept="image/png,image/jpeg,image/webp,image/gif"
-        @change="selectedFile = $event.target.files[0]"
-    /></label>
+    <ImageCropInput v-model="selectedFile" label="Imagem da categoria" :aspect-ratio="1" />
     <label
       ><input v-model="form.is_active" type="checkbox" /> Categoria ativa</label
     >
