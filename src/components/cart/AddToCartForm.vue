@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { toast } from '../../utils/feedback'
 import { useCartStore } from '../../stores/cartStore'
 
 const props = defineProps({ product: { type: Object, required: true } })
@@ -12,7 +12,6 @@ watch(() => props.product, value => {
 }, { immediate: true })
 const error = ref('')
 const cart = useCartStore()
-const router = useRouter()
 
 function add() {
   error.value = ''
@@ -21,14 +20,15 @@ function add() {
     const ids = selected.value[group.id] || []
     if (group.required && !ids.length) {
       error.value = `Escolha uma opção de ${group.name}.`
+      toast(error.value, 'error')
       return
     }
     choices.push(...ids)
   }
   try {
     cart.add(props.product.id, quantity.value, choices)
-    router.push('/carrinho')
-  } catch (err) { error.value = err.message }
+    toast('Produto adicionado ao carrinho!', 'success', { label: 'Ir ao carrinho', to: '/carrinho' })
+  } catch (err) { error.value = err.message; toast(error.value, 'error') }
 }
 function selectSingle(group, value) {
   selected.value[group.id] = value ? [Number(value)] : []
