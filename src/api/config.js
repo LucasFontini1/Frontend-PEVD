@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { toast, setOverlay } from '../utils/feedback'
 // Em DEV, manter a mesma hostname do Vite para o cookie SameSite=Lax funcionar.
 const localHost = typeof window !== 'undefined' && ['localhost', '127.0.0.1'].includes(window.location.hostname)
   ? window.location.hostname : '127.0.0.1'
@@ -26,10 +27,16 @@ export async function endSession() {
   finally { setAccessToken(null) }
 }
 api.interceptors.request.use(config => {
+  if (config.method && config.method !== 'get') { config._showOverlay = true; setOverlay(true) }
   if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`
   return config
 })
-api.interceptors.response.use(undefined, async error => {
+api.interceptors.response.use(response => {
+  if (response.config._showOverlay) setOverlay(false)
+  return response
+}, async error => {
+  if (error.config?._showOverlay) { setOverlay(false); error.config._showOverlay = false }
+  if (error.response?.status !== 401) toast(error.response?.data?.detail || 'Não foi possível concluir a operação.', 'error')
   const original = error.config
   if (error.response?.status !== 401 || !original || original._retry ||
       original.url?.includes('token/') || original.url?.includes('registro/')) throw error
