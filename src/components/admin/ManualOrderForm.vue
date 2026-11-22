@@ -1,6 +1,6 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
-import { adminCatalogApi } from '../../api/adminCatalogApi'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { catalogApi } from '../../api/catalogApi'
 import { orderApi } from '../../api/orderApi'
 import { apiMessage, currency } from '../../utils/catalog'
 
@@ -9,6 +9,8 @@ const products = ref([])
 const error = ref('')
 const busy = ref(false)
 const search = ref('')
+let searchTimer = null
+let requestId = 0
 const idempotencyKey = ref(crypto.randomUUID())
 const form = reactive({
   customer_name: '', customer_phone: '', customer_email: '',
@@ -19,7 +21,7 @@ const form = reactive({
 const lines = ref([])
 const visibleProducts = computed(() => {
   const q = search.value.toLocaleLowerCase('pt-BR').trim()
-  return products.value.filter(p => p.is_active && p.is_available &&
+  return products.value.filter(p => p.is_available &&
     (!q || p.name.toLocaleLowerCase('pt-BR').includes(q)))
 })
 function add(product) {
@@ -53,11 +55,17 @@ const estimate = computed(() => lines.value.reduce((total, line) => {
   return total + (Number(line.product.effective_price) + extra) * Number(line.quantity)
 }, 0))
 async function load() {
+  const key = ++requestId
   try {
-    const { data } = await adminCatalogApi.list('products', { page_size: 100 })
-    products.value = data.results || data
-  } catch (err) { error.value = apiMessage(err) }
+    const { data } = await catalogApi.products({
+      page_size: 100, ...(search.value ? { search: search.value } : {}),
+    })
+    if (key === requestId) products.value = data.results || data
+  } catch (err) {
+    if (key === requestId) error.value = apiMessage(err)
+  }
 }
+watch(search, () => { clearTimeout(searchTimer); searchTimer = setTimeout(load, 250) })
 async function submit() {
   if (!lines.value.length) { error.value = 'Adicione ao menos um produto.'; return }
   const date = new Date(form.scheduled_at)
