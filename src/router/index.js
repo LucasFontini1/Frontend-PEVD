@@ -12,6 +12,7 @@ const router = createRouter({
     { path: '/entrar', name: 'login', component: LoginView },
     { path: '/cadastro', name: 'register', component: RegisterView },
     { path: '/cardapio', name: 'catalog', component: CatalogView },
+    { path: '/tutorial', name: 'tutorial', component: () => import('../views/TutorialView.vue') },
     { path: '/atendimento', name: 'support', component: () => import('../views/SupportView.vue') },
     { path: '/contato', name: 'contact', component: () => import('../views/ContactView.vue') },
     { path: '/atendimento/duvidas', name: 'tickets', component: () => import('../views/TicketsView.vue'), meta: { auth: true } },

@@ -7,6 +7,7 @@ export const commercialApi = {
   updateFaq: (id, data) => api.patch(`admin/faqs/${id}/`, data),
   unpublishFaq: id => api.delete(`admin/faqs/${id}/`),
   tickets: params => api.get('admin/support/tickets/', { params }),
+  ticketDetail: id => api.get(`admin/support/tickets/${id}/`),
   reply: (id, message, close = false) =>
     api.post(`admin/support/tickets/${id}/reply/`, { message, close }),
   closeTicket: id => api.post(`admin/support/tickets/${id}/close/`),

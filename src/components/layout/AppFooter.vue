@@ -19,6 +19,7 @@ const brand = useBrandStore()
       <nav aria-label="Atendimento" class="footer-links">
         <strong>Atendimento</strong>
         <RouterLink to="/atendimento">Perguntas frequentes</RouterLink>
+        <RouterLink to="/tutorial">Como usar o site</RouterLink>
         <RouterLink to="/contato">Contato</RouterLink>
         <RouterLink to="/meus-pedidos">Meus pedidos</RouterLink>
       </nav>
