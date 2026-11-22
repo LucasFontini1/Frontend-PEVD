@@ -163,3 +163,17 @@ input[type="checkbox"] {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Espaçamento consistente nas páginas sem interferir nos controles internos */
+#conteudo { min-width: 0; padding-block: clamp(1.25rem, 3vw, 2.5rem); }
+#conteudo > * { min-width: 0; }
+#conteudo :where(.card, section, article, form) { min-width: 0; }
+#conteudo :where(img, video, canvas) { max-width: 100%; }
+#conteudo :where(h1, h2, h3, p) { overflow-wrap: break-word; }
+#conteudo :where(.field, .filters, .actions, .buttons) { min-width: 0; }
+#conteudo :where(input, select, textarea) { max-width: 100%; }
+@media (max-width: 800px) {
+  #conteudo { padding-block: 1rem 5rem; }
+  #conteudo :where(.card) { padding: clamp(1rem, 3vw, 1.5rem); }
+  #conteudo :where(.filters, .buttons, .actions) { row-gap: .75rem; }
+}
