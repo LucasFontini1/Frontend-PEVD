@@ -9,7 +9,7 @@ const cover = computed(() => imageUrl(props.product.images?.[0]?.image))
     <RouterLink :to="`/produto/${product.slug}`" :aria-label="`Ver ${product.name}`">
       <div class="product-photo">
         <img v-if="cover" :src="cover" :alt="product.images[0].alt_text" loading="lazy" />
-        <span v-else class="missing-image" aria-hidden="true">♡</span>
+        <span v-else class="missing-image"><b aria-hidden="true">♡</b><small>Foto ainda não cadastrada</small></span>
         <span v-if="product.is_featured" class="featured">Destaque</span>
       </div>
       <div class="details">
@@ -32,7 +32,7 @@ const cover = computed(() => imageUrl(props.product.images?.[0]?.image))
   display: grid; place-items: center; overflow: hidden; }
 .product-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform .25s; }
 .product-card:hover img { transform: scale(1.06); }
-.missing-image { color: #e8abc1; font-size: 4rem; }
+.missing-image { color: #b85b80; display: grid; justify-items: center; gap: .2rem; }\n.missing-image b { color: #e8abc1; font-size: 4rem; line-height: 1; }\n.missing-image small { font-size: .78rem; }
 .featured { position: absolute; left: .7rem; top: .7rem; font-size: .72rem; font-weight: 800;
   color: #9b3165; background: #fff8fb; padding: .25rem .6rem; border-radius: 99px; }
 .details { padding: 1rem 1.2rem 1.3rem; }
