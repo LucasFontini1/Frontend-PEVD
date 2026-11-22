@@ -17,6 +17,12 @@ const busy = ref(false)
 const reason = ref('')
 import ManualOrderForm from './ManualOrderForm.vue'
 import CompletedOrdersReport from './CompletedOrdersReport.vue'
+const allowed = {
+  aguardando_confirmacao: ['confirmado', 'rejeitado', 'cancelado'],
+  confirmado: ['em_preparo', 'cancelado'],
+  em_preparo: ['pronto'],
+  pronto: ['concluido'],
+}
 const statuses = [
   ['confirmado', 'Confirmar'],
   ['rejeitado', 'Rejeitar'],
@@ -25,6 +31,7 @@ const statuses = [
   ['concluido', 'Concluir'],
   ['cancelado', 'Cancelar'],
 ]
+function availableTransitions(order) { return statuses.filter(([status]) => (allowed[order.status] || []).includes(status)) }
 async function load() {
   error.value = ''
   try {
@@ -90,8 +97,8 @@ onMounted(load)
       <p>{{ new Date(order.scheduled_at).toLocaleString('pt-BR') }}</p>
       <p v-for="(item, i) in order.items" :key="i">{{ item.quantity }} × {{ item.product_name_snapshot }}</p>
       <div class="buttons">
-        <button v-for="[status, label] in statuses" :key="status" :disabled="busy" @click="transition(order.id, status)">{{ label }}</button>
-        <button v-if="order.payment_status === 'pendente'" :disabled="busy" @click="markPaid(order.id)">Confirmar pagamento manual</button>
+        <button v-for="[status, label] in availableTransitions(order)" :key="status" :disabled="busy" @click="transition(order.id, status)">{{ label }}</button>
+        <button v-if="order.payment_status === 'pendente' && !['rejeitado', 'cancelado'].includes(order.status)" :disabled="busy" @click="markPaid(order.id)">Confirmar pagamento manual</button>
       </div>
     </article>
     <p v-if="!filtered.length && orders.length">Nenhum pedido corresponde à busca.</p>
