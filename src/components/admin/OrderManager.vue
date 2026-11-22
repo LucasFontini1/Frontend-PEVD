@@ -11,7 +11,7 @@ const view = ref("list");
 const filtered = computed(() =>
   orders.value.filter((order) => {
     const text =
-      `${order.customer_name || ""} ${order.customer_phone || ""} ${order.public_id || ""}`.toLocaleLowerCase(
+      `${order.customer_display_name || order.customer_name || ""} ${order.customer_phone || ""} ${order.public_id || ""}`.toLocaleLowerCase(
         "pt-BR",
       );
     return (
@@ -153,7 +153,7 @@ onMounted(load);
       <article v-for="order in filtered" :key="order.public_id" class="card">
         <h3>Pedido {{ order.public_id.slice(0, 8) }}</h3>
         <p>
-          <strong>{{ order.customer_name || "Cliente da plataforma" }}</strong>
+          <strong>{{ order.customer_display_name || order.customer_name || "Cliente não identificado" }}</strong>
           <span v-if="order.customer_phone"> · {{ order.customer_phone }}</span>
           · Origem: {{ order.source === "whatsapp" ? "WhatsApp" : "Site" }}
         </p>
