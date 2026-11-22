@@ -20,8 +20,9 @@ async function submit() {
 </script>
 <template>
   <section class="form-shell card">
+    <p class="section-eyebrow">Bem-vindo de volta ♡</p>
     <h1>Entrar</h1>
-    <p>Entre com seu e-mail ou nome de usuário.</p>
+    <p>Entre com seu e-mail ou usuário e continue sua encomenda.</p>
     <form @submit.prevent="submit">
       <label class="field">E-mail ou usuário<input v-model.trim="login" autocomplete="username" required /></label>
       <label class="field">Senha<input v-model="password" type="password" autocomplete="current-password" required /></label>

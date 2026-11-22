@@ -12,6 +12,11 @@ export const orderApi = {
   updateAddress: (id, payload) => api.patch(`addresses/${id}/`, payload),
   deleteAddress: id => api.delete(`addresses/${id}/`),
   adminOrders: params => api.get('admin/orders/', { params }),
+  adminManualOrder: payload => api.post('admin/orders/manual/', payload),
+  adminCompletedReport: params => api.get('admin/orders/completed-report/', { params }),
+  adminCompletedCsv: params => api.get('admin/orders/completed-report/', {
+    params: { ...params, download: 'csv' }, responseType: 'blob',
+  }),
   adminTransition: (id, status, reason) => api.post(`admin/orders/${id}/transitions/`, { status, reason }),
   adminPayment: (id, reason) => api.post(`admin/orders/${id}/confirm-payment/`, { reason }),
   businessHours: () => api.get('admin/business-hours/'),

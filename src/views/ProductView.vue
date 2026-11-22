@@ -20,7 +20,7 @@ watch(() => route.params.slug, load)
 </script>
 <template>
   <section class="detail">
-    <RouterLink to="/cardapio">Voltar ao cardápio</RouterLink>
+    <RouterLink class="back" to="/cardapio">← Voltar ao cardápio</RouterLink>
     <p v-if="loading" role="status">Carregando detalhes...</p>
     <p v-else-if="error" role="alert" class="error">{{ error }}</p>
     <div v-else-if="product" class="detail-grid">
@@ -30,8 +30,8 @@ watch(() => route.params.slug, load)
           <img v-for="photo in product.images" :key="photo.id" :src="imageUrl(photo.image)" :alt="photo.alt_text" />
         </div>
       </div>
-      <div class="details">
-        <p class="muted">{{ product.category.name }}</p>
+      <div class="details card">
+        <p class="section-eyebrow">{{ product.category.name }}</p>
         <h1>{{ product.name }}</h1>
         <p class="price">{{ currency(product.effective_price) }} / {{ product.unit }}</p>
         <p>{{ product.description }}</p>
@@ -52,11 +52,16 @@ watch(() => route.params.slug, load)
   </section>
 </template>
 <style scoped>
-.detail { padding-block: 2rem; }
-.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; padding-top: 2rem; }
+.detail { padding: 2rem 0 3rem; }
+.back { font-weight: 800; text-decoration: none; }
+.detail-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0,1fr); gap: 2rem; padding-top: 2rem; align-items: start; }
 .photos { display: grid; gap: 1rem; }
-.photos img { width: 100%; border-radius: 1rem; background: #f2e5d6; }
-.no-image { background: #f4e4d8; border-radius: 1rem; aspect-ratio: 4/3; display: grid; place-items: center; }
-.price { font-size: 1.5rem; color: var(--color-primary-hover); font-weight: 800; }
+.photos img { width: 100%; border-radius: 19px; background: #fce4e9; box-shadow: var(--shadow-card); }
+.no-image { background: linear-gradient(135deg,#fce2eb,#ffece1); border-radius: 22px;
+  aspect-ratio: 4/3; display: grid; place-items: center; font-weight: 700; color: #a95b7a; }
+.details h1 { font-size: clamp(2rem,4vw,3.4rem); margin: .5rem 0 1rem; }
+.details h2 { font-size: 1.2rem; }
+.details section { border-top: 1px solid var(--color-border); padding-block: .7rem; }
+.price { font-size: 1.7rem; color: var(--color-primary-hover); font-weight: 800; }
 @media(max-width: 760px) { .detail-grid { grid-template-columns: 1fr; } }
 </style>

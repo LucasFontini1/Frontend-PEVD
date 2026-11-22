@@ -1,8 +1,11 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { commercialApi } from '../../api/commercialApi'
 import { apiMessage, currency } from '../../utils/catalog'
 const entries = ref([])
+const search = ref('')
+const visible = computed(() => entries.value.filter(item =>
+  item.title.toLocaleLowerCase('pt-BR').includes(search.value.toLocaleLowerCase('pt-BR'))))
 const error = ref('')
 const busy = ref(false)
 const editing = ref(null)
@@ -40,7 +43,10 @@ onMounted(load)
     <p>Informar valor e validade reais antes de apresentar proposta.</p>
     <p v-if="error" role="alert" class="error">{{ error }}</p>
     <p v-if="!entries.length">Nenhuma solicitação de orçamento.</p>
-    <article v-for="quote in entries" :key="quote.id" class="card">
+    <label class="field">Pesquisar orçamento pelo nome
+      <input v-model.trim="search" type="search" placeholder="Título da encomenda" />
+    </label>
+    <article v-for="quote in visible" :key="quote.id" class="card">
       <h3>{{ quote.title }}</h3>
       <p class="muted">Cliente #{{ quote.user }}</p>
       <p>{{ quote.details }}</p>

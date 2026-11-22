@@ -1,10 +1,13 @@
 <script setup>
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { commercialApi } from '../../api/commercialApi'
 import { adminCatalogApi } from '../../api/adminCatalogApi'
 import { apiMessage, imageUrl } from '../../utils/catalog'
 
 const items = ref([])
+const search = ref('')
+const visible = computed(() => items.value.filter(item =>
+  item.title.toLocaleLowerCase('pt-BR').includes(search.value.toLocaleLowerCase('pt-BR'))))
 const editing = ref(null)
 const file = ref(null)
 const busy = ref(false)
@@ -64,7 +67,10 @@ onMounted(load)
       <div><button class="button" :disabled="busy">{{ busy ? 'Salvando...' : 'Salvar banner' }}</button>
         <button v-if="editing" type="button" @click="reset">Cancelar edição</button></div>
     </form>
-    <article v-for="item in items" :key="item.id" class="card">
+    <label class="field">Pesquisar banner pelo título
+      <input v-model.trim="search" type="search" placeholder="Título do banner" />
+    </label>
+    <article v-for="item in visible" :key="item.id" class="card">
       <img v-if="imageUrl(item.image)" :src="imageUrl(item.image)" :alt="item.title" class="preview" />
       <h3>{{ item.title }}</h3><p>{{ item.subtitle }}</p>
       <p>{{ item.link_path }} · {{ item.is_active ? 'Publicado' : 'Rascunho' }}</p>

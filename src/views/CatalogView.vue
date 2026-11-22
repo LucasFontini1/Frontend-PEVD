@@ -24,7 +24,11 @@ onMounted(async () => { try { await catalog.loadCategories() } catch { /* list s
 </script>
 <template>
   <section class="section">
-    <h1>{{ category ? 'Produtos da categoria' : 'Nosso cardápio' }}</h1>
+    <div class="catalog-intro">
+      <span class="section-eyebrow">Escolha seu doce favorito</span>
+      <h1>{{ category ? 'Produtos da categoria' : 'Nosso cardápio' }}</h1>
+      <p>Explore as opções disponíveis para tornar seu momento mais especial.</p>
+    </div>
     <form class="filters" @submit.prevent="page = 1; load()">
       <label>Buscar produto<input v-model.trim="search" placeholder="Nome do doce" /></label>
       <label>Ordenar por
@@ -52,11 +56,20 @@ onMounted(async () => { try { await catalog.loadCategories() } catch { /* list s
 </template>
 <style scoped>
 .section { padding: 2rem 0; }
-.filters { display: flex; flex-wrap: wrap; align-items: end; gap: 1rem; margin-block: 1.5rem; }
-.filters label { display: grid; gap: .4rem; }
-.filters input:not([type=checkbox]), .filters select { padding: .65rem; border: 1px solid #a48d80; border-radius: 8px; }
+.catalog-intro { text-align: center; background: linear-gradient(120deg,#fff0f6,#fff1e5);
+  border-radius: 24px; padding: 2rem 1rem; }
+.catalog-intro h1 { margin: .4rem 0; font-size: clamp(2.1rem,4vw,3.6rem); }
+.filters { display: flex; flex-wrap: wrap; align-items: end; gap: 1rem;
+  margin-block: 1.5rem; padding: 1.3rem; background: white;
+  border: 1px solid var(--color-border); border-radius: 18px; }
+.filters label { display: grid; gap: .4rem; font-weight: 700; }
+.filters input:not([type=checkbox]), .filters select { padding: .65rem; }
 .checkbox { display: flex !important; flex-direction: row; align-items: center; }
-.categories { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.categories { display: flex; gap: .7rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.categories a { background: white; border: 1px solid var(--color-border);
+  padding: .65rem .95rem; border-radius: 100px; text-decoration: none; font-size: .88rem; font-weight: 800; }
+.categories a.router-link-active { background: var(--color-primary); color: white; }
 .pages { display: flex; justify-content: center; gap: 1rem; align-items: center; padding: 2rem; }
-.pages button { padding: .5rem 1rem; }
+.pages button { padding: .6rem 1rem; background: white; border: 1px solid var(--color-border); border-radius: 10px; }
+@media(max-width: 580px) { .filters label { width: 100%; } }
 </style>

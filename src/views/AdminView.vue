@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { adminCatalogApi } from '../api/adminCatalogApi'
 import { apiMessage } from '../utils/catalog'
 import CategoryEditor from '../components/admin/CategoryEditor.vue'
@@ -24,13 +24,50 @@ const editing = ref(false)
 const mediaProduct = ref(null)
 const error = ref('')
 const loading = ref(false)
+const search = ref('')
+const pageLimit = 100
+const serverMatches = ref(null)
+const searching = ref(false)
+let searchSequence = 0
+let debounce = null
+async function searchCatalog() {
+  const sequence = ++searchSequence
+  const query = search.value.trim()
+  const type = tab.value
+  if (!query || !['products', 'categories'].includes(type)) {
+    serverMatches.value = null
+    searching.value = false
+    return
+  }
+  searching.value = true
+  try {
+    const { data } = await adminCatalogApi.list(type, { page_size: pageLimit, search: query })
+    if (sequence === searchSequence) serverMatches.value = data.results || data
+  } catch (err) {
+    if (sequence === searchSequence) error.value = apiMessage(err)
+  } finally {
+    if (sequence === searchSequence) searching.value = false
+  }
+}
+watch([search, tab], () => {
+  clearTimeout(debounce)
+  ++searchSequence
+  serverMatches.value = null
+  if (!search.value.trim()) { searching.value = false; return }
+  debounce = setTimeout(searchCatalog, 250)
+})
+const visibleItems = computed(() => {
+  const source = serverMatches.value || (tab.value === 'products' ? products.value : categories.value)
+  const q = search.value.toLocaleLowerCase('pt-BR')
+  return source.filter(item => item.name.toLocaleLowerCase('pt-BR').includes(q))
+})
 
 async function load() {
   loading.value = true
   error.value = ''
   try {
     const [a, b] = await Promise.all([
-      adminCatalogApi.list('categories', { page_size: 100 }),
+      adminCatalogApi.list('categories', { page_size: pageLimit }),
       adminCatalogApi.list('products', { page_size: 100 }),
     ])
     categories.value = a.data.results || a.data
@@ -49,9 +86,17 @@ onMounted(load)
 </script>
 <template>
   <section class="admin">
-    <h1>Painel comercial</h1>
-    <p>Apenas superusuários autorizados podem alterar o cardápio.</p>
-    <div class="tabs">
+    <div class="admin-heading">
+      <div>
+        <span class="section-eyebrow">Área administrativa</span>
+        <h1>Painel comercial</h1>
+        <p class="muted">Gerencie produtos, pedidos, atendimento e configurações da loja.</p>
+      </div>
+      <RouterLink class="store-link" to="/">Ver minha loja →</RouterLink>
+    </div>
+    <div class="admin-layout">
+    <aside class="tabs" aria-label="Seções administrativas">
+      <strong>MENU DA LOJA</strong>
       <button v-for="[key, title] in [
         ['dashboard', 'Visão geral'], ['faq', 'FAQ'], ['tickets', 'Atendimento'],
         ['quotes', 'Orçamentos'], ['contacts', 'Contatos'], ['banners', 'Banners'],
@@ -61,7 +106,8 @@ onMounted(load)
       <button :aria-pressed="tab === 'brand'" @click="tab = 'brand'; editing = false; mediaProduct = null">Marca</button>
       <button :aria-pressed="tab === 'orders'" @click="tab = 'orders'; editing = false; mediaProduct = null">Pedidos</button>
       <button :aria-pressed="tab === 'schedule'" @click="tab = 'schedule'; editing = false; mediaProduct = null">Agenda e entrega</button>
-    </div>
+    </aside>
+    <div class="admin-content">
     <p v-if="loading" role="status">Carregando dados...</p>
     <p v-if="error" role="alert" class="error">{{ error }}</p>
     <DashboardPanel v-if="tab === 'dashboard'" />
@@ -74,9 +120,15 @@ onMounted(load)
     <OrderManager v-if="tab === 'orders'" />
     <ScheduleManager v-if="tab === 'schedule'" />
     <div v-if="['products', 'categories'].includes(tab) && !editing && !mediaProduct">
-      <p><button class="button" @click="edit()">Adicionar {{ tab === 'products' ? 'produto' : 'categoria' }}</button></p>
-      <p v-if="!(tab === 'products' ? products : categories).length" class="muted">Nenhum registro cadastrado.</p>
-      <div v-for="item in tab === 'products' ? products : categories" :key="item.id" class="item card">
+      <div class="catalog-tools">
+        <label class="field">Pesquisar {{ tab === 'products' ? 'produto' : 'categoria' }} pelo nome
+          <input v-model.trim="search" type="search" placeholder="Digite o nome do item" />
+        </label>
+        <button class="button" @click="edit()">Adicionar {{ tab === 'products' ? 'produto' : 'categoria' }}</button>
+      </div>
+      <p v-if="searching" role="status">Pesquisando no catálogo...</p>
+      <p v-if="!visibleItems.length && !searching" class="muted">Nenhum item encontrado.</p>
+      <div v-for="item in visibleItems" :key="item.id" class="item card">
         <div>
           <strong>{{ item.name }}</strong>
           <p class="muted">{{ item.slug }} · {{ item.is_active ? 'Ativo' : 'Inativo' }}</p>
@@ -98,14 +150,36 @@ onMounted(load)
       <ProductMediaEditor :product-id="mediaProduct.id" />
       <OptionsEditor :product-id="mediaProduct.id" />
     </div>
+    </div>
+    </div>
   </section>
 </template>
 <style scoped>
-.admin { padding-block: 2rem 4rem; }
-.tabs, .actions { display: flex; flex-wrap: wrap; gap: .7rem; }
+.admin { padding: 2rem 0 4rem; }
+.admin-heading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 2rem; }
+.admin-heading h1 { font-size: clamp(2rem,4vw,3rem); margin: .4rem 0; }
+.store-link { font-weight: 800; white-space: nowrap; }
+.admin-layout { display: grid; grid-template-columns: 220px minmax(0,1fr); gap: 1.5rem; align-items: start; }
+.tabs { background: white; border: 1px solid var(--color-border); border-radius: 20px; padding: .9rem;
+  display: grid; gap: .35rem; position: sticky; top: 110px; }
+.tabs strong { color: #a08495; font-size: .69rem; letter-spacing: .12em; padding: .7rem; }
+.tabs button { border: 0; background: transparent; color: var(--color-text);
+  font-weight: 700; text-align: left; border-radius: 10px; padding: .8rem .9rem; }
+.tabs button:hover { background: var(--color-soft); }
 .tabs button[aria-pressed=true] { background: var(--color-primary); color: white; }
-.tabs button, .actions button { padding: .6rem .9rem; border: 1px solid var(--color-border); border-radius: 10px; cursor: pointer; }
-.item { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin: .7rem 0; padding: 1rem; }
+.admin-content { min-width: 0; display: grid; gap: 1rem; }
+.catalog-tools { display: flex; align-items: end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.catalog-tools .field { flex: 1; min-width: 220px; }
+.actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.actions button { padding: .65rem .9rem; background: var(--color-soft);
+  border: 1px solid var(--color-border); border-radius: 10px; }
+.item { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
 .item p { margin: .2rem 0; }
 .tools { display: grid; gap: 1.2rem; }
+@media(max-width: 850px) {
+  .admin-layout { grid-template-columns: 1fr; }
+  .tabs { position: static; display: flex; overflow-x: auto; }
+  .tabs strong { display: none; }
+  .tabs button { flex-shrink: 0; }
+}
 </style>

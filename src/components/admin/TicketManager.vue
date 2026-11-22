@@ -1,9 +1,12 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { commercialApi } from '../../api/commercialApi'
 import { apiMessage } from '../../utils/catalog'
 
 const tickets = ref([])
+const search = ref('')
+const visible = computed(() => tickets.value.filter(item =>
+  item.subject.toLocaleLowerCase('pt-BR').includes(search.value.toLocaleLowerCase('pt-BR'))))
 const selected = ref(null)
 const reply = ref('')
 const closeAfter = ref(false)
@@ -51,8 +54,11 @@ onMounted(load)
         <option value="encerrado">Encerrado</option>
       </select>
     </label>
-    <p v-if="!tickets.length">Nenhum atendimento encontrado.</p>
-    <div v-for="ticket in tickets" :key="ticket.id" class="card summary">
+    <label class="field">Pesquisar atendimento pelo assunto
+      <input v-model.trim="search" type="search" placeholder="Assunto" />
+    </label>
+    <p v-if="!visible.length">Nenhum atendimento encontrado.</p>
+    <div v-for="ticket in visible" :key="ticket.id" class="card summary">
       <div><strong>{{ ticket.subject }}</strong><p>{{ ticket.status }} · Cliente #{{ ticket.user }}</p></div>
       <button @click="selected = ticket">Abrir conversa</button>
     </div>

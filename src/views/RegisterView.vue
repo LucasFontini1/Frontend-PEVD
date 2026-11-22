@@ -25,6 +25,7 @@ async function submit() {
 </script>
 <template>
   <section class="form-shell card">
+    <p class="section-eyebrow">Um doce começo ♡</p>
     <h1>Criar conta</h1>
     <form @submit.prevent="submit">
       <label class="field">Nome<input v-model.trim="values.name" autocomplete="name" /></label>

@@ -19,7 +19,8 @@ const quote = ref(null)
 const error = ref('')
 const busy = ref(false)
 const confirmationKey = ref(crypto.randomUUID())
-const canQuote = computed(() => cart.lines.length > 0 && scheduledAt.value &&
+const canQuote = computed(() => cart.lines.length > 0 &&
+  scheduledAt.value && Number.isFinite(new Date(scheduledAt.value).getTime()) &&
   (fulfillment.value === 'pickup' || addressId.value))
 const fingerprint = computed(() => JSON.stringify([
   cart.lines, fulfillment.value, scheduledAt.value, addressId.value, notes.value,
@@ -66,6 +67,7 @@ onMounted(load)
 </script>
 <template>
   <section class="checkout">
+    <span class="section-eyebrow">Seu pedido, do jeitinho que você escolheu</span>
     <h1>Finalizar encomenda</h1>
     <p v-if="!cart.lines.length">Carrinho vazio. <RouterLink to="/cardapio">Voltar ao cardápio</RouterLink></p>
     <template v-else>
@@ -100,7 +102,8 @@ onMounted(load)
   </section>
 </template>
 <style scoped>
-.checkout { display: grid; gap: 1.2rem; padding: 2rem 0; max-width: 800px; }
+.checkout { display: grid; gap: 1.2rem; padding: 2.5rem 0; max-width: 850px; }
+.checkout h1 { font-size: clamp(2rem,5vw,3rem); margin: 0; }
 .checkout form { display: grid; gap: 1rem; }
 .checkout label { margin-right: 1rem; }
 .checkout select, .checkout input[type=datetime-local], textarea { padding: .7rem; max-width: 100%; }

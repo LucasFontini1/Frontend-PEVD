@@ -1,5 +1,9 @@
 import axios from 'axios'
-const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api/'
+// Em DEV, manter a mesma hostname do Vite para o cookie SameSite=Lax funcionar.
+const localHost = typeof window !== 'undefined' && ['localhost', '127.0.0.1'].includes(window.location.hostname)
+  ? window.location.hostname : '127.0.0.1'
+const baseURL = import.meta.env.VITE_API_BASE_URL ||
+  `http://${localHost}:8000/api/`
 export const api = axios.create({ baseURL, withCredentials: true })
 export const sessionApi = axios.create({ baseURL, withCredentials: true })
 let accessToken = null

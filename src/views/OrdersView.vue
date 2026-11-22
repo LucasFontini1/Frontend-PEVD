@@ -16,6 +16,7 @@ onMounted(async () => {
 </script>
 <template>
   <section class="orders">
+    <span class="section-eyebrow">Seus momentos especiais</span>
     <h1>Meus pedidos</h1>
     <p v-if="loading" role="status">Carregando pedidos...</p>
     <p v-if="error" role="alert" class="error">{{ error }}</p>
