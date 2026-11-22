@@ -7,6 +7,8 @@ import ProductEditor from '../components/admin/ProductEditor.vue'
 import ProductMediaEditor from '../components/admin/ProductMediaEditor.vue'
 import OptionsEditor from '../components/admin/OptionsEditor.vue'
 import BrandEditor from '../components/admin/BrandEditor.vue'
+import OrderManager from '../components/admin/OrderManager.vue'
+import ScheduleManager from '../components/admin/ScheduleManager.vue'
 
 const tab = ref('products')
 const categories = ref([])
@@ -47,11 +49,15 @@ onMounted(load)
       <button :aria-pressed="tab === 'products'" @click="tab = 'products'; editing = false; mediaProduct = null">Produtos</button>
       <button :aria-pressed="tab === 'categories'" @click="tab = 'categories'; editing = false; mediaProduct = null">Categorias</button>
       <button :aria-pressed="tab === 'brand'" @click="tab = 'brand'; editing = false; mediaProduct = null">Marca</button>
+      <button :aria-pressed="tab === 'orders'" @click="tab = 'orders'; editing = false; mediaProduct = null">Pedidos</button>
+      <button :aria-pressed="tab === 'schedule'" @click="tab = 'schedule'; editing = false; mediaProduct = null">Agenda e entrega</button>
     </div>
     <p v-if="loading" role="status">Carregando dados...</p>
     <p v-if="error" role="alert" class="error">{{ error }}</p>
     <BrandEditor v-if="tab === 'brand'" />
-    <div v-if="tab !== 'brand' && !editing && !mediaProduct">
+    <OrderManager v-if="tab === 'orders'" />
+    <ScheduleManager v-if="tab === 'schedule'" />
+    <div v-if="['products', 'categories'].includes(tab) && !editing && !mediaProduct">
       <p><button class="button" @click="edit()">Adicionar {{ tab === 'products' ? 'produto' : 'categoria' }}</button></p>
       <p v-if="!(tab === 'products' ? products : categories).length" class="muted">Nenhum registro cadastrado.</p>
       <div v-for="item in tab === 'products' ? products : categories" :key="item.id" class="item card">
