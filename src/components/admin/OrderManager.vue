@@ -105,6 +105,7 @@ onMounted(load)
       <p>{{ order.status.replaceAll('_', ' ') }} | Pagamento: {{ order.payment_status }}</p>
       <p><strong>{{ currency(order.total) }}</strong> — {{ order.fulfillment_type }}</p>
       <p>{{ new Date(order.scheduled_at).toLocaleString('pt-BR') }}</p>
+      <p v-if="order.notes"><strong>Observações:</strong> {{ order.notes }}</p>
       <p v-for="(item, i) in order.items" :key="i">{{ item.quantity }} × {{ item.product_name_snapshot }}</p>
       <div class="buttons">
         <template v-if="order.status === 'pronto'">
