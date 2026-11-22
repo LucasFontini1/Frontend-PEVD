@@ -1,5 +1,17 @@
+> **Fase 4 — Atendimento:** FAQ pesquisável, contato, tickets privados, orçamento e painel com dados reais implementados. Consulte [docs/FASE4.md](docs/FASE4.md). Não há chat em tempo real, email fictício nem receita estimada. Requer backend Fase 4 e homologação antes de main.
+
+> **Fase 2 — Vitrine e gestão de catálogo:** consulte [docs/FASE2.md](docs/FASE2.md). As rotas `/cardapio`, `/categoria/:slug`, `/produto/:slug` e `/admin` consultam APIs reais. Sem produtos fictícios, sem carrinho/checkout da Fase 3.
+
 # Pensei em Você Doces — Frontend
 
-Projeto Vue 3/Vite da loja Pensei em Você Doces.
+Vue 3, Vite, Pinia, Vue Router e Axios. Aplicação da **Fase 1**, sem catálogo nem pedidos simulados.
 
-Desenvolvimento incremental por issues e PRs para `dev`. A branch `main` contém apenas entregas validadas.
+## Desenvolvimento
+Copie `.env.example` para `.env`, configure `VITE_API_BASE_URL`, execute `npm install`, `npm run dev`.
+Validação: `npm run build`, `npm test`, `npm run lint`.
+
+## Segurança
+Access JWT permanece em memória; refresh em cookie HttpOnly pelo backend. Não armazenar tokens em localStorage. O acesso comercial é revalidado no servidor em `GET /api/admin/access/`.
+
+## Status
+Login/cadastro devem ser validados integrados ao backend antes do merge em main. Recuperação e confirmação de e-mail são pendentes.
