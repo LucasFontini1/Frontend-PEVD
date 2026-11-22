@@ -32,3 +32,4 @@ const cover = computed(() => imageUrl(props.product.images?.[0]?.image))
 h3 { margin: .3rem 0; }
 .price { font-weight: 800; }
 .price small { font-weight: 400; }
+</style>
