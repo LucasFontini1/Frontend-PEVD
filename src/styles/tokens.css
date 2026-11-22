@@ -1,0 +1,15 @@
+:root {
+  --color-background: #fff5e9;
+  --color-primary: #c96680;
+  --color-primary-hover: #ac4965;
+  --color-heading: #704438;
+  --color-accent: #e8b75e;
+  --color-text: #312721;
+  --color-surface: #fff;
+  --color-border: #e7d8ce;
+  --radius-card: 20px;
+  --shadow-card: 0 8px 26px rgb(63 38 28 / 8%);
+  --space-1: .5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+}
