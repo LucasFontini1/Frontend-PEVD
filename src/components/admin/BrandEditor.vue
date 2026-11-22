@@ -11,6 +11,8 @@ const form = reactive({
   announcement: '', response_hours: null, background_color: '#FFF5E9', primary_color: '#C96680', heading_color: '#704438',
 })
 const logo = ref(null)
+const heroImage = ref(null)
+const heroPreview = ref(null)
 const preview = ref(null)
 const busy = ref(false)
 const error = ref('')
@@ -20,6 +22,7 @@ onMounted(async () => {
     const { data } = await brandApi.adminGet()
     Object.assign(form, data)
     preview.value = imageUrl(data.logo)
+    heroPreview.value = imageUrl(data.hero_image)
   } catch (err) { error.value = apiMessage(err) }
 })
 async function submit() {
@@ -30,10 +33,16 @@ async function submit() {
       const { data } = await adminCatalogApi.upload(logo.value)
       payload.logo_attachment_key = data.attachment_key
     }
+    if (heroImage.value) {
+      const { data } = await adminCatalogApi.upload(heroImage.value)
+      payload.hero_image_attachment_key = data.attachment_key
+    }
     await brandApi.update(payload)
     await brandStore.load()
     preview.value = imageUrl(brandStore.brand.logo)
     logo.value = null
+    heroImage.value = null
+    heroPreview.value = imageUrl(brandStore.brand.hero_image)
     success.value = 'Identidade visual atualizada.'
   } catch (err) { error.value = apiMessage(err) }
   finally { busy.value = false }
@@ -54,6 +63,8 @@ async function submit() {
     <label class="field">Cor dos títulos<input v-model="form.heading_color" type="color" /></label>
     <img v-if="preview" class="logo-preview" :src="preview" alt="Logo atual da loja" />
     <label class="field">Nova logo<input type="file" accept="image/png,image/jpeg,image/webp" @change="logo = $event.target.files[0]" /></label>
+    <img v-if="heroPreview" class="hero-preview" :src="heroPreview" alt="Imagem principal atual" />
+    <label class="field">Imagem principal da home<input type="file" accept="image/png,image/jpeg,image/webp" @change="heroImage = $event.target.files[0]" /></label>
     <p v-if="error" class="error" role="alert">{{ error }}</p>
     <p v-if="success" role="status">{{ success }}</p>
     <button class="button" :disabled="busy">{{ busy ? 'Salvando...' : 'Salvar identidade' }}</button>
@@ -62,5 +73,6 @@ async function submit() {
 <style scoped>
 .brand-editor { max-width: 570px; }
 .brand-editor input[type=color] { width: 80px; height: 42px; border: 1px solid var(--color-border); border-radius: 8px; }
+.hero-preview { max-width: 300px; max-height: 190px; object-fit: cover; border-radius: 12px; }
 .logo-preview { max-width: 180px; max-height: 100px; object-fit: contain; }
 </style>
