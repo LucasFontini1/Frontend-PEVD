@@ -87,7 +87,7 @@ watch(() => route.params.codigo, load);
         <p v-for="(entry, i) in order.history" :key="i">
           {{ new Date(entry.changed_at).toLocaleString("pt-BR") }} —
           {{ entry.new_status.replaceAll("_", " ") }}
-          <span v-if="entry.reason">: {{ entry.reason }}</span>
+          <span v-if="entry.reason" class="backend-text">: {{ entry.reason }}</span>
         </p>
       </section>
       <button

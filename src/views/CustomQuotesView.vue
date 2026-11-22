@@ -119,7 +119,7 @@ onMounted(load);
     <p v-if="!entries.length && !loading">Nenhum orçamento solicitado.</p>
     <article v-for="quote in entries" :key="quote.id" class="card">
       <h3>{{ quote.title }}</h3>
-      <p>{{ quote.details }}</p>
+      <p class="backend-text">{{ quote.details }}</p>
       <p>
         Status: <strong>{{ quote.status }}</strong>
       </p>
@@ -127,7 +127,7 @@ onMounted(load);
         <p>
           Valor proposto: <strong>{{ currency(quote.proposed_price) }}</strong>
         </p>
-        <p>{{ quote.proposed_details }}</p>
+        <p class="backend-text">{{ quote.proposed_details }}</p>
         <p v-if="quote.valid_until">
           Validade: {{ new Date(quote.valid_until).toLocaleString("pt-BR") }}
         </p>

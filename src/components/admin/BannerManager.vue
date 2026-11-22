@@ -153,7 +153,7 @@ onMounted(load);
       </div>
       <div class="banner-info">
         <h3>{{ item.title }}</h3>
-        <p>{{ item.subtitle }}</p>
+        <p class="backend-text">{{ item.subtitle }}</p>
         <p class="muted">
           {{ item.link_path }} ·
           <span class="status">{{

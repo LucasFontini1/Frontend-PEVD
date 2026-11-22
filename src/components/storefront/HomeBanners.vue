@@ -22,7 +22,7 @@ onMounted(async () => {
       />
       <div class="copy">
         <h2>{{ item.title }}</h2>
-        <p v-if="item.subtitle">{{ item.subtitle }}</p>
+        <p v-if="item.subtitle" class="backend-text">{{ item.subtitle }}</p>
         <RouterLink class="button" :to="item.link_path"
           >Ver detalhes</RouterLink
         >

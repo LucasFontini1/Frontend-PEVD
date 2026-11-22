@@ -160,7 +160,7 @@ onMounted(load);
           <span class="message-author">{{
             message.sender === selected.user ? "Cliente" : "Equipe da loja"
           }}</span>
-          <p>{{ message.body }}</p>
+          <p class="backend-text">{{ message.body }}</p>
           <time :datetime="message.created_at">{{
             new Date(message.created_at).toLocaleString("pt-BR")
           }}</time>

@@ -55,7 +55,7 @@ watch(() => route.params.id, load);
         <strong>{{
           item.sender === auth.user?.id ? "Você" : "Atendimento"
         }}</strong>
-        <p>{{ item.body }}</p>
+        <p class="backend-text">{{ item.body }}</p>
         <small>{{ new Date(item.created_at).toLocaleString("pt-BR") }}</small>
       </div>
       <form

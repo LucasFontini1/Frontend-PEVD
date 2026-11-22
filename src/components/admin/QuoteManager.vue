@@ -88,7 +88,7 @@ onMounted(load);
     <article v-for="quote in visible" :key="quote.id" class="card">
       <h3>{{ quote.title }}</h3>
       <p class="muted">Cliente #{{ quote.user }}</p>
-      <p>{{ quote.details }}</p>
+      <p class="backend-text">{{ quote.details }}</p>
       <p>
         {{ quote.flavor }} · {{ quote.portions }} porções ·
         {{ quote.desired_date }}
