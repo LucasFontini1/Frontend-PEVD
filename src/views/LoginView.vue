@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/authStore'
+import PasswordField from '../components/layout/PasswordField.vue'
 const login = ref('')
 const password = ref('')
 const error = ref('')
@@ -25,7 +26,7 @@ async function submit() {
     <p>Entre com seu e-mail ou usuário e continue sua encomenda.</p>
     <form @submit.prevent="submit">
       <label class="field">E-mail ou usuário<input v-model.trim="login" autocomplete="username" required /></label>
-      <label class="field">Senha<input v-model="password" type="password" autocomplete="current-password" required /></label>
+      <PasswordField v-model="password" label="Senha" autocomplete="current-password" />
       <p v-if="error" class="error" role="alert">{{ error }}</p>
       <button class="button" type="submit" :disabled="auth.loading">{{ auth.loading ? 'Entrando...' : 'Entrar' }}</button>
     </form>
