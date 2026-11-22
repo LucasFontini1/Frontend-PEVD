@@ -1,9 +1,12 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { commercialApi } from '../../api/commercialApi'
 import { apiMessage } from '../../utils/catalog'
 
 const contacts = ref([])
+const search = ref('')
+const visible = computed(() => contacts.value.filter(item =>
+  `${item.name} ${item.subject}`.toLocaleLowerCase('pt-BR').includes(search.value.toLocaleLowerCase('pt-BR'))))
 const error = ref('')
 const busy = ref(false)
 async function load() {
@@ -25,7 +28,10 @@ onMounted(load)
     <p>Essas mensagens não geram uma conversa privada. Para acompanhar respostas no site, utilize tickets.</p>
     <p v-if="error" role="alert" class="error">{{ error }}</p>
     <p v-if="!contacts.length">Nenhum contato registrado.</p>
-    <article v-for="item in contacts" :key="item.id" class="card">
+    <label class="field">Pesquisar nome ou assunto
+      <input v-model.trim="search" type="search" placeholder="Cliente ou mensagem" />
+    </label>
+    <article v-for="item in visible" :key="item.id" class="card">
       <h3>{{ item.subject }}</h3>
       <p><strong>{{ item.name }}</strong> · {{ item.email }}</p>
       <p class="body">{{ item.message }}</p>

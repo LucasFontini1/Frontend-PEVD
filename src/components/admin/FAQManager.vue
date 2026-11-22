@@ -1,8 +1,11 @@
 <script setup>
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { commercialApi } from '../../api/commercialApi'
 import { apiMessage } from '../../utils/catalog'
 const faqs = ref([])
+const search = ref('')
+const visible = computed(() => faqs.value.filter(faq =>
+  faq.question.toLocaleLowerCase('pt-BR').includes(search.value.toLocaleLowerCase('pt-BR'))))
 const current = ref(null)
 const form = reactive({ question: '', answer: '', sort_order: 0, published: false })
 const error = ref('')
@@ -52,7 +55,10 @@ onMounted(load)
         <button v-if="current" type="button" @click="reset">Cancelar edição</button>
       </div>
     </form>
-    <article v-for="faq in faqs" :key="faq.id" class="card">
+    <label class="field">Pesquisar pergunta para editar
+      <input v-model.trim="search" type="search" placeholder="Nome ou conteúdo da pergunta" />
+    </label>
+    <article v-for="faq in visible" :key="faq.id" class="card">
       <strong>{{ faq.question }}</strong>
       <p>{{ faq.answer }}</p>
       <p class="muted">{{ faq.published ? 'Publicada' : 'Rascunho' }}</p>

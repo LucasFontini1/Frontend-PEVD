@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { authApi } from '../api/authApi'
 import { endSession, renewSession, setAccessToken } from '../api/config'
+let pendingHydration = null
 export const useAuthStore = defineStore('auth', () => {
   const user = ref(null)
   const loading = ref(false)
@@ -9,10 +10,22 @@ export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = computed(() => Boolean(user.value))
   async function hydrate() {
     if (initialized.value) return
+    if (pendingHydration) return pendingHydration
     loading.value = true
-    try { await renewSession(); user.value = (await authApi.getProfile()).data }
-    catch { user.value = null; setAccessToken(null) }
-    finally { initialized.value = true; loading.value = false }
+    pendingHydration = (async () => {
+      try {
+        await renewSession()
+        user.value = (await authApi.getProfile()).data
+      } catch {
+        user.value = null
+        setAccessToken(null)
+      } finally {
+        initialized.value = true
+        loading.value = false
+      }
+    })()
+    try { await pendingHydration }
+    finally { pendingHydration = null }
   }
   async function login(login, password) {
     loading.value = true
