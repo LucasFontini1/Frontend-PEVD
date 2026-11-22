@@ -166,7 +166,7 @@ onMounted(load);
           {{ order.fulfillment_type }}
         </p>
         <p>{{ new Date(order.scheduled_at).toLocaleString("pt-BR") }}</p>
-        <p v-if="order.notes">
+        <p v-if="order.notes" class="backend-text">
           <strong>Observações:</strong> {{ order.notes }}
         </p>
         <p v-for="(item, i) in order.items" :key="i">
