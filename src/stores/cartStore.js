@@ -11,6 +11,7 @@ function clean(raw) {
     .slice(0, 40).map(item => ({
       product_id: item.product_id,
       quantity: item.quantity,
+      observation: typeof item.observation === 'string' ? item.observation.slice(0, 500) : '',
       selected_option_ids: [...new Set(item.selected_option_ids)].sort((a, b) => a - b),
     }))
 }
@@ -26,16 +27,18 @@ export const useCartStore = defineStore('cart', () => {
     catch { /* storage bloqueado: mantém carrinho em memória */ }
   }, { deep: true })
 
-  function add(productId, quantity, optionIds = []) {
+  function add(productId, quantity, optionIds = [], observation = '') {
     const [line] = clean([{
       product_id: Number(productId),
       quantity: Number(quantity),
       selected_option_ids: optionIds.map(Number),
+      observation: String(observation).slice(0, 500),
     }])
     if (!line) throw new Error('Produto, opções ou quantidade inválidos.')
     const existing = lines.value.find(item =>
       item.product_id === line.product_id &&
-      JSON.stringify(item.selected_option_ids) === JSON.stringify(line.selected_option_ids))
+      JSON.stringify(item.selected_option_ids) === JSON.stringify(line.selected_option_ids) &&
+      item.observation === line.observation)
     if (existing) {
       existing.quantity = Math.min(100, existing.quantity + line.quantity)
     } else if (lines.value.length < 40) {
