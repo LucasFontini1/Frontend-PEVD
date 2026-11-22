@@ -112,7 +112,7 @@ onMounted(load);
     </label>
     <article v-for="faq in visible" :key="faq.id" class="card">
       <h3>{{ faq.question }}</h3>
-      <p>{{ faq.answer }}</p>
+      <p class="backend-text">{{ faq.answer }}</p>
       <p class="muted">{{ faq.published ? "Publicada" : "Rascunho" }}</p>
       <div class="actions">
         <button type="button" class="button-outline" @click="edit(faq)">
