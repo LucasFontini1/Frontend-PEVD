@@ -1,0 +1,9 @@
+<template>
+  <footer class="footer"><div class="container">
+    <strong>Pensei em Você Doces</strong>
+    <p>Confeitaria artesanal. Informações comerciais e cardápio serão publicados após confirmação.</p>
+  </div></footer>
+</template>
+<style scoped>
+.footer { margin-top: 4rem; padding: 2rem 0; border-top: 1px solid var(--color-border); }
+</style>
