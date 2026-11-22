@@ -3,6 +3,7 @@ import { computed, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useCatalogStore } from "../stores/catalogStore";
 import ProductGrid from "../components/catalog/ProductGrid.vue";
+import { setSeo } from "../utils/seo";
 
 const route = useRoute();
 const catalog = useCatalogStore();
@@ -25,9 +26,24 @@ watch([category, ordering, onlyAvailable], () => {
   load();
 });
 watch(page, load);
+watch(category, () => updateCategorySeo());
+function updateCategorySeo() {
+  if (!category.value) return;
+  const selected = catalog.categories.find((item) => item.slug === category.value);
+  if (selected) {
+    setSeo({
+      title: `${selected.name} em Joinville`,
+      description: (selected.description || `Confira os produtos da categoria ${selected.name} na Pensei em Você Doces.`).slice(0, 160),
+      path: route.path,
+    });
+  } else if (catalog.categories.length) {
+    setSeo({ path: route.path, noindex: true });
+  }
+}
 onMounted(async () => {
   try {
     await catalog.loadCategories();
+    updateCategorySeo();
   } catch {
     /* list still loads */
   }

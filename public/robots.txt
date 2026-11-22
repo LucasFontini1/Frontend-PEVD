@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+# Áreas privadas têm autenticação e X-Robots-Tag: noindex.
+# Não bloquear o rastreamento dessas URLs aqui: o Google precisa ver o noindex.
+Sitemap: https://penseiemvocesdoces.vercel.app/sitemap.xml
