@@ -1,14 +1,17 @@
 <script setup>
-import AppHeader from './components/layout/AppHeader.vue'
-import AppFooter from './components/layout/AppFooter.vue'
-import MobileNav from './components/layout/MobileNav.vue'
-import FeedbackLayer from './components/layout/FeedbackLayer.vue'
-import { onMounted } from 'vue'
-import { useBrandStore } from './stores/brandStore'
-import { useAuthStore } from './stores/authStore'
-const brand = useBrandStore()
-const auth = useAuthStore()
-onMounted(() => { brand.load(); auth.hydrate() })
+import AppHeader from "./components/layout/AppHeader.vue";
+import AppFooter from "./components/layout/AppFooter.vue";
+import MobileNav from "./components/layout/MobileNav.vue";
+import FeedbackLayer from "./components/layout/FeedbackLayer.vue";
+import { onMounted } from "vue";
+import { useBrandStore } from "./stores/brandStore";
+import { useAuthStore } from "./stores/authStore";
+const brand = useBrandStore();
+const auth = useAuthStore();
+onMounted(() => {
+  brand.load();
+  auth.hydrate();
+});
 </script>
 <template>
   <AppHeader />

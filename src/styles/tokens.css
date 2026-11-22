@@ -1,7 +1,7 @@
 :root {
-  --font-body: 'Jost', 'Segoe UI', Arial, sans-serif;
-  --font-heading: 'Josefin Sans', 'Jost', Arial, sans-serif;
-  --font-accent: 'Jost', 'Segoe UI', Arial, sans-serif;
+  --font-body: "Jost", "Segoe UI", Arial, sans-serif;
+  --font-heading: "Josefin Sans", "Jost", Arial, sans-serif;
+  --font-accent: "Jost", "Segoe UI", Arial, sans-serif;
   --color-background: #fff9f7;
   --color-primary: #dc5388;
   --color-primary-hover: #b82d69;
@@ -13,7 +13,7 @@
   --color-soft: #fff0f5;
   --radius-card: 22px;
   --shadow-card: 0 15px 38px rgb(112 52 80 / 8%);
-  --space-1: .5rem;
+  --space-1: 0.5rem;
   --space-2: 1rem;
   --space-3: 1.5rem;
 }

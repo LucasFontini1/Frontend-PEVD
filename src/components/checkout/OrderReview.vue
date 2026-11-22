@@ -1,6 +1,6 @@
 <script setup>
-import { currency } from '../../utils/catalog'
-defineProps({ quote: { type: Object, required: true } })
+import { currency } from "../../utils/catalog";
+defineProps({ quote: { type: Object, required: true } });
 </script>
 <template>
   <section class="card">
@@ -12,10 +12,21 @@ defineProps({ quote: { type: Object, required: true } })
     <p>Subtotal: {{ currency(quote.subtotal) }}</p>
     <p>Taxa de entrega: {{ currency(quote.shipping) }}</p>
     <p class="total">Total: {{ currency(quote.total) }}</p>
-    <p class="muted">Pagamento a combinar. O pedido ficará aguardando confirmação.</p>
+    <p class="muted">
+      Pagamento a combinar. O pedido ficará aguardando confirmação.
+    </p>
   </section>
 </template>
 <style scoped>
-.line { display: flex; justify-content: space-between; gap: 1rem; border-bottom: 1px solid var(--color-border); padding: .5rem 0; }
-.total { font-size: 1.35rem; font-weight: 800; }
+.line {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.5rem 0;
+}
+.total {
+  font-size: 1.35rem;
+  font-weight: 800;
+}
 </style>
