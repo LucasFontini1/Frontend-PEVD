@@ -4,6 +4,7 @@ import { commercialApi } from "../../api/commercialApi";
 import { adminCatalogApi } from "../../api/adminCatalogApi";
 import { apiMessage, imageUrl } from "../../utils/catalog";
 import ConfirmModal from "../layout/ConfirmModal.vue";
+import ImageCropInput from "../layout/ImageCropInput.vue";
 import { toast } from "../../utils/feedback";
 
 const items = ref([]);
@@ -118,12 +119,7 @@ onMounted(load);
           required
           placeholder="/cardapio"
       /></label>
-      <label class="field"
-        >Imagem (opcional)<input
-          type="file"
-          accept="image/jpeg,image/png,image/webp"
-          @change="file = $event.target.files[0]"
-      /></label>
+      <ImageCropInput v-model="file" label="Imagem do banner (opcional)" :aspect-ratio="16 / 9" />
       <label class="field"
         >Ordem<input v-model.number="form.sort_order" type="number" min="0"
       /></label>
