@@ -1,13 +1,6 @@
 User-agent: *
 Allow: /
-Disallow: /admin
-Disallow: /checkout
-Disallow: /carrinho
-Disallow: /meus-pedidos
-Disallow: /pedido-confirmado
-Disallow: /atendimento/duvidas
-Disallow: /encomendas-personalizadas
-Disallow: /entrar
-Disallow: /cadastro
 
+# Áreas privadas têm autenticação e X-Robots-Tag: noindex.
+# Não bloquear o rastreamento dessas URLs aqui: o Google precisa ver o noindex.
 Sitemap: https://penseiemvocesdoces.vercel.app/sitemap.xml
