@@ -6,9 +6,11 @@ import { useCartStore } from '../../stores/cartStore'
 const props = defineProps({ product: { type: Object, required: true } })
 const selected = ref({})
 const quantity = ref(props.product.minimum_quantity)
+const observation = ref('')
 watch(() => props.product, value => {
   selected.value = Object.fromEntries(value.option_groups.map(group => [group.id, []]))
   quantity.value = value.minimum_quantity
+  observation.value = ''
 }, { immediate: true })
 const error = ref('')
 const cart = useCartStore()
@@ -26,7 +28,7 @@ function add() {
     choices.push(...ids)
   }
   try {
-    cart.add(props.product.id, quantity.value, choices)
+    cart.add(props.product.id, quantity.value, choices, observation.value)
     toast('Produto adicionado ao carrinho!', 'success', { label: 'Ir ao carrinho', to: '/carrinho' })
   } catch (err) { error.value = err.message; toast(error.value, 'error') }
 }
@@ -52,6 +54,9 @@ function selectSingle(group, value) {
         </select>
       </template>
     </fieldset>
+    <label class="field">Observações para sua encomenda
+      <textarea v-model.trim="observation" rows="3" maxlength="500" placeholder="Ex.: sem granulado, escrever uma mensagem..." />
+    </label>
     <label class="field">Quantidade
       <input v-model.number="quantity" type="number" :min="product.minimum_quantity" max="100" required />
     </label>
