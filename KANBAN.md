@@ -9,6 +9,14 @@ A conexão GitHub disponível gerencia issues e PRs, mas não cria um GitHub Pro
 - [#19](https://github.com/LucasFontini1/Frontend-PEVD/issues/19): painel FAQ, tickets, orçamentos, contato, banners e dashboard real.
 - [PR #20](https://github.com/LucasFontini1/Frontend-PEVD/pull/20): integrado na dev com lint, Vitest e build.
 
+## Refatoração e gestão comercial — integrado em dev (22/11/2026)
+- [#22](https://github.com/LucasFontini1/Frontend-PEVD/issues/22): nova identidade visual rosa/creme baseada nos exemplos fornecidos; home, cards, categorias, header, navegação mobile, catálogo, produto, carrinho, checkout, autenticação, rodapé e painel.
+- [#23](https://github.com/LucasFontini1/Frontend-PEVD/issues/23): sessão restaurada automaticamente via refresh HttpOnly (7 dias) e access em memória (10 minutos), com hostname local consistente; não salva JWT em localStorage.
+- [#24](https://github.com/LucasFontini1/Frontend-PEVD/issues/24): busca por nome no painel de produtos, categorias, FAQs, banners e atendimento; produtos/categorias consultam API além dos 100 primeiros.
+- [#25](https://github.com/LucasFontini1/Frontend-PEVD/issues/25): criação de pedido WhatsApp por admin e relatório de concluídos/CSV.
+- [PR #26](https://github.com/LucasFontini1/Frontend-PEVD/pull/26): squash merge em dev. ESLint, build e 16 Vitest aprovados.
+- [docs/UX_WHATSAPP.md](docs/UX_WHATSAPP.md): descrição e checklist de homologação visual e funcional.
+
 ## Em homologação / backlog
 - [#21](https://github.com/LucasFontini1/Frontend-PEVD/issues/21): E2E atendimento e conteúdo real em staging.
 - [#15](https://github.com/LucasFontini1/Frontend-PEVD/issues/15): E2E checkout e acessibilidade.
