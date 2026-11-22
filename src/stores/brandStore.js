@@ -5,7 +5,7 @@ import { brandApi } from '../api/brandApi'
 const defaults = {
   name: 'Pensei em Você Doces',
   background_color: '#FFF5E9', primary_color: '#C96680', heading_color: '#704438',
-  logo: null, hero_image: null, business_email: '', phone: '', pickup_address: '', instagram_url: '',
+  logo: null, hero_image: null, business_email: '', phone: '+55 47 9667-5064', pickup_address: '', instagram_url: 'https://www.instagram.com/penseiemvocedoces/',
   announcement: '', response_hours: null,
 }
 export const useBrandStore = defineStore('brand', () => {
@@ -13,7 +13,10 @@ export const useBrandStore = defineStore('brand', () => {
   async function load() {
     try {
       const { data } = await brandApi.get()
-      brand.value = { ...defaults, ...data }
+      brand.value = { ...defaults, ...data,
+        phone: data.phone || defaults.phone,
+        instagram_url: data.instagram_url || defaults.instagram_url,
+      }
       for (const [key, property] of [
         ['background_color', '--color-background'],
         ['primary_color', '--color-primary'],
