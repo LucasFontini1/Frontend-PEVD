@@ -177,3 +177,9 @@ input[type="checkbox"] {
   #conteudo :where(.card) { padding: clamp(1rem, 3vw, 1.5rem); }
   #conteudo :where(.filters, .buttons, .actions) { row-gap: .75rem; }
 }
+
+/* Texto livre da API: preserva quebras de linha sem interpretar HTML. */
+.backend-text {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
