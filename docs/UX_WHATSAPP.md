@@ -11,7 +11,7 @@ Painel com sidebar, busca por nome em produtos/categorias (servidor), FAQ, banne
 
 A tela "Novo pedido WhatsApp" pede nome/telefone, email de conta existente opcional, retirada/entrega, data/horário, itens e personalização. A simulação monetária é informativa; o backend **recalcula os preços e frete**. O pagamento permanece pendente até confirmação explícita do admin.
 
-Relatório de pedidos `concluido`: resumo separado por `pago` e `pendente`, filtros de período, exportação CSV. **Não** é conciliação financeira.
+Relatório de pedidos `concluido`: resumo separado por `pago` e `pendente`, filtros pela data de conclusão, exportação CSV. **Não** é conciliação financeira.
 
 ## Checklist antes de produção
 - Validar medidas e responsividade em smartphone, tablet e desktop reais.
