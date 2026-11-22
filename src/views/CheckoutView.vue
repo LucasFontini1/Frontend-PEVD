@@ -84,7 +84,7 @@ onMounted(load)
               </option>
             </select>
           </label>
-          <AddressForm @saved="addressSaved" />
+
         </template>
         <label class="field">Data e horário desejados
           <input v-model="scheduledAt" type="datetime-local" required />
@@ -92,6 +92,7 @@ onMounted(load)
         <label class="field">Observações<textarea v-model.trim="notes" maxlength="1000" rows="3" /></label>
         <button class="button" :disabled="busy || !canQuote || !hours.length">Revisar preço e disponibilidade</button>
       </form>
+      <AddressForm v-if="fulfillment === 'delivery'" @saved="addressSaved" />
       <p v-if="error" class="error" role="alert">{{ error }}</p>
       <OrderReview v-if="quote" :quote="quote" />
       <button v-if="quote" class="button" :disabled="busy" @click="confirm">{{ busy ? 'Confirmando...' : 'Confirmar pedido' }}</button>
