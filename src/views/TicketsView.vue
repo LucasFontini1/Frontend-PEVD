@@ -11,7 +11,7 @@ const orders = ref([])
 const loading = ref(false)
 const saving = ref(false)
 const error = ref('')
-const form = reactive({ subject: '', message: '', order_id: '' })
+const form = reactive({ subject: '', message: '', order_public_id: '' })
 async function load() {
   loading.value = true; error.value = ''
   try {
@@ -26,7 +26,7 @@ async function create() {
   try {
     const { data } = await supportApi.newTicket({
       subject: form.subject, message: form.message,
-      ...(form.order_id ? { order_id: Number(form.order_id) } : {}),
+      ...(form.order_public_id ? { order_public_id: form.order_public_id } : {}),
     })
     await router.push(`/atendimento/duvidas/${data.id}`)
   } catch (err) { error.value = apiMessage(err) }
@@ -44,9 +44,9 @@ onMounted(load)
       <label class="field">Assunto<input v-model.trim="form.subject" required minlength="4" maxlength="180" /></label>
       <label class="field">Mensagem<textarea v-model.trim="form.message" required minlength="5" maxlength="4000" rows="4" /></label>
       <label class="field">Relacionar a pedido (opcional)
-        <select v-model="form.order_id">
+        <select v-model="form.order_public_id">
           <option value="">Sem pedido relacionado</option>
-          <option v-for="order in orders" :key="order.public_id" :value="order.id">
+          <option v-for="order in orders" :key="order.public_id" :value="order.public_id">
             Pedido {{ order.public_id.slice(0, 8) }}
           </option>
         </select>
