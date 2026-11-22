@@ -28,11 +28,11 @@ const fingerprint = computed(() => JSON.stringify([
 watch(fingerprint, () => { quote.value = null; confirmationKey.value = crypto.randomUUID() })
 function payload() {
   return {
-    items: cart.lines.map(line => ({ ...line })),
+    items: cart.lines.map(({ product_id, quantity, selected_option_ids }) => ({ product_id, quantity, selected_option_ids })),
     fulfillment_type: fulfillment.value,
     scheduled_at: new Date(scheduledAt.value).toISOString(),
     ...(fulfillment.value === 'delivery' ? { address_id: Number(addressId.value) } : {}),
-    notes: notes.value,
+    notes: [notes.value, ...cart.lines.filter(line => line.observation).map(line => `Produto #${line.product_id}: ${line.observation}`)].filter(Boolean).join('\n').slice(0, 1000),
   }
 }
 async function load() {
