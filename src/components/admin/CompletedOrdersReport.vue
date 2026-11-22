@@ -96,7 +96,7 @@ onMounted(load);
           <tbody>
             <tr v-for="item in report.results" :key="item.public_id">
               <td>{{ item.public_id.slice(0, 8) }}</td>
-              <td>{{ item.customer_name || "Conta do site" }}</td>
+              <td>{{ item.customer_display_name || item.customer_name || "Cliente não identificado" }}</td>
               <td>{{ item.source }}</td>
               <td>
                 {{ new Date(item.completed_at).toLocaleDateString("pt-BR") }}

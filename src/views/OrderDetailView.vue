@@ -53,6 +53,7 @@ watch(() => route.params.codigo, load);
       <p>
         Pedido: <strong>{{ order.public_id }}</strong>
       </p>
+      <p v-if="order.customer_name">Cliente: <strong>{{ order.customer_name }}</strong></p>
       <p>
         Status: <strong>{{ order.status.replaceAll("_", " ") }}</strong>
       </p>
