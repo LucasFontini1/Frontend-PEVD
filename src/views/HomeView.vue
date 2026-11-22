@@ -22,7 +22,7 @@ onMounted(async () => {
 });
 </script>
 <template>
-  <p v-if="brand.brand.announcement" class="announcement">
+  <p v-if="brand.brand.announcement" class="announcement backend-text">
     {{ brand.brand.announcement }}
   </p>
   <section class="hero">
