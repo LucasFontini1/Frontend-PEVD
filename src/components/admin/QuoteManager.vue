@@ -53,7 +53,7 @@ onMounted(load)
       <p>{{ quote.flavor }} · {{ quote.portions }} porções · {{ quote.desired_date }}</p>
       <p>Status: {{ quote.status }}</p>
       <p v-if="quote.proposed_price !== null">Preço proposto: {{ currency(quote.proposed_price) }}</p>
-      <button v-if="['solicitado', 'proposto'].includes(quote.status)" @click="edit(quote)">Preparar proposta</button>
+      <button v-if="['solicitado', 'proposto'].includes(quote.status)" type="button" class="button-outline" @click="edit(quote)">Preparar proposta</button>
       <form v-if="editing === quote.id" @submit.prevent="submit(quote)">
         <label class="field">Preço total (R$)<input v-model="price" type="number" min="0" step=".01" required /></label>
         <label class="field">Detalhes e condições

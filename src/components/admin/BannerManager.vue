@@ -70,16 +70,32 @@ onMounted(load)
     <label class="field">Pesquisar banner pelo título
       <input v-model.trim="search" type="search" placeholder="Título do banner" />
     </label>
-    <article v-for="item in visible" :key="item.id" class="card">
-      <img v-if="imageUrl(item.image)" :src="imageUrl(item.image)" :alt="item.title" class="preview" />
+    <article v-for="item in visible" :key="item.id" class="card banner-item">
+      <div class="banner-photo">
+        <img v-if="imageUrl(item.image)" :src="imageUrl(item.image)" :alt="item.title" class="preview" />
+        <span v-else class="muted">Sem imagem</span>
+      </div>
+      <div class="banner-info">
       <h3>{{ item.title }}</h3><p>{{ item.subtitle }}</p>
-      <p>{{ item.link_path }} · {{ item.is_active ? 'Publicado' : 'Rascunho' }}</p>
-      <button @click="edit(item)">Editar</button>
-      <button v-if="item.is_active" @click="unpublish(item.id)">Despublicar</button>
+      <p class="muted">{{ item.link_path }} · <span class="status">{{ item.is_active ? 'Publicado' : 'Rascunho' }}</span></p>
+      <div class="actions">
+      <button type="button" class="button-outline" @click="edit(item)">Editar</button>
+      <button v-if="item.is_active" type="button" class="button-danger" @click="unpublish(item.id)">Despublicar</button>
+      </div>
+      </div>
     </article>
   </section>
 </template>
 <style scoped>
 .manager, form { display: grid; gap: 1rem; }
-.preview { max-height: 150px; width: 100%; object-fit: contain; }
+.banner-item { display: grid; grid-template-columns: minmax(145px, .45fr) minmax(0, 1fr);
+  align-items: center; gap: 1.4rem; }
+.banner-photo { aspect-ratio: 4 / 3; border-radius: 16px; display: grid; place-items: center;
+  overflow: hidden; background: var(--color-soft); }
+.preview { height: 100%; width: 100%; object-fit: contain; }
+.banner-info { min-width: 0; }
+.banner-info p { overflow-wrap: anywhere; }
+.actions { display: flex; flex-wrap: wrap; gap: .6rem; }
+.status { color: var(--color-primary-hover); font-weight: 800; }
+@media(max-width: 650px) { .banner-item { grid-template-columns: 1fr; } .banner-photo { max-height: 200px; } }
 </style>

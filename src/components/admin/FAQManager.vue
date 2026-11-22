@@ -59,12 +59,12 @@ onMounted(load)
       <input v-model.trim="search" type="search" placeholder="Nome ou conteúdo da pergunta" />
     </label>
     <article v-for="faq in visible" :key="faq.id" class="card">
-      <strong>{{ faq.question }}</strong>
+      <h3>{{ faq.question }}</h3>
       <p>{{ faq.answer }}</p>
       <p class="muted">{{ faq.published ? 'Publicada' : 'Rascunho' }}</p>
       <div class="actions">
-        <button @click="edit(faq)">Editar</button>
-        <button v-if="faq.published" @click="unpublish(faq.id)">Despublicar</button>
+        <button type="button" class="button-outline" @click="edit(faq)">Editar</button>
+        <button v-if="faq.published" type="button" class="button-danger" @click="unpublish(faq.id)">Despublicar</button>
       </div>
     </article>
   </section>
