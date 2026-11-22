@@ -10,7 +10,7 @@ vi.mock('../../api/orderApi', () => ({
       results: [
         { public_id: 'abcdef12-1234-1234-1234-123456789012', customer_name: 'Maria',
           source: 'whatsapp', payment_status: 'pago',
-          total: '40.00', created_at: '2026-11-20T09:00:00Z' },
+          total: '40.00', created_at: '2026-11-20T09:00:00Z', completed_at: '2026-11-21T10:00:00Z' },
       ],
     } })),
   },
