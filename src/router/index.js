@@ -11,6 +11,8 @@ const router = createRouter({
     { path: "/", name: "home", component: HomeView },
     { path: "/entrar", name: "login", component: LoginView },
     { path: "/cadastro", name: "register", component: RegisterView },
+    { path: "/termos-de-uso", name: "terms", component: () => import("../views/TermsView.vue") },
+    { path: "/politica-de-privacidade", name: "privacy", component: () => import("../views/PrivacyView.vue") },
     { path: "/cardapio", name: "catalog", component: CatalogView },
     {
       path: "/tutorial",
