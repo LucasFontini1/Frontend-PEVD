@@ -66,7 +66,9 @@ onMounted(async () => {
       <div><span class="section-eyebrow">Uma seleção especial</span><h2>Doces em destaque</h2></div>
       <RouterLink to="/cardapio" class="see-all">Ver cardápio completo →</RouterLink>
     </div>
-    <ProductGrid :products="catalog.products" :loading="catalog.loading" :error="catalog.error" />
+    <div class="home-products">
+      <ProductGrid :products="catalog.products" :loading="catalog.loading" :error="catalog.error" />
+    </div>
   </section>
   <section class="special">
     <div>
@@ -142,5 +144,10 @@ onMounted(async () => {
   .hero-actions a { width: 100%; justify-content: center; }
   .special-icon { display: none; }
   .section-title { align-items: start; flex-direction: column; }
+}
+@media (width < 600px) {
+  .home-products :deep(.product-grid > :nth-child(n + 4)) {
+    display: none;
+  }
 }
 </style>
