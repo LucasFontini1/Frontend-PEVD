@@ -59,7 +59,7 @@ onMounted(load);
       <p>
         <strong>{{ item.name }}</strong> · {{ item.email }}
       </p>
-      <p class="body">{{ item.message }}</p>
+      <p class="body backend-text">{{ item.message }}</p>
       <p>{{ item.handled_at ? "Tratado" : "Aguardando atendimento" }}</p>
       <button
         v-if="!item.handled_at"

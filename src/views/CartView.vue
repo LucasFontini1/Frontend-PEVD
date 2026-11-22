@@ -60,7 +60,7 @@ onMounted(async () => {
           sujeito à confirmação
         </p>
         <p v-if="line.observation">
-          <strong>Observações:</strong> {{ line.observation }}
+          <strong>Observações:</strong> <span class="backend-text">{{ line.observation }}</span>
         </p>
         <p v-if="line.selected_option_ids.length">
           Opções escolhidas: {{ line.selected_option_ids.join(", ") }}

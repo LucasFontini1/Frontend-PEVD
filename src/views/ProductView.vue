@@ -70,7 +70,7 @@ watch(() => route.params.slug, load);
         <p class="price">
           {{ currency(product.effective_price) }} / {{ product.unit }}
         </p>
-        <p>{{ product.description }}</p>
+        <p class="backend-text">{{ product.description }}</p>
         <p v-if="!product.is_available" class="error">
           Temporariamente indisponível
         </p>
@@ -81,13 +81,13 @@ watch(() => route.params.slug, load);
           <strong>Antecedência mínima:</strong>
           {{ product.minimum_lead_hours }} horas
         </p>
-        <p v-if="product.ingredients">
+        <p v-if="product.ingredients" class="backend-text">
           <strong>Ingredientes:</strong> {{ product.ingredients }}
         </p>
-        <p v-if="product.allergen_info">
+        <p v-if="product.allergen_info" class="backend-text">
           <strong>Alergênicos:</strong> {{ product.allergen_info }}
         </p>
-        <p v-if="product.conservation_info">
+        <p v-if="product.conservation_info" class="backend-text">
           <strong>Conservação:</strong> {{ product.conservation_info }}
         </p>
         <section

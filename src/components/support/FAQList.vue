@@ -49,7 +49,7 @@ onMounted(async () => {
     </p>
     <details v-for="faq in filtered" :key="faq.id" class="entry">
       <summary>{{ faq.question }}</summary>
-      <p>{{ faq.answer }}</p>
+      <p class="backend-text">{{ faq.answer }}</p>
     </details>
   </section>
 </template>
