@@ -2,6 +2,7 @@
 import { onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { catalogApi } from '../api/catalogApi'
+import AddToCartForm from '../components/cart/AddToCartForm.vue'
 import { apiMessage, currency, imageUrl } from '../utils/catalog'
 
 const route = useRoute()
@@ -45,7 +46,7 @@ watch(() => route.params.slug, load)
           <p v-if="group.required" class="muted">Escolha obrigatória ao encomendar</p>
           <p v-for="option in group.options" :key="option.id">{{ option.name }} — + {{ currency(option.additional_price) }}</p>
         </section>
-        <p class="muted">Pedidos online serão habilitados na Fase 3.</p>
+        <AddToCartForm :product="product" />
       </div>
     </div>
   </section>
