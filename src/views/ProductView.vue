@@ -5,6 +5,7 @@ import { catalogApi } from "../api/catalogApi";
 import AddToCartForm from "../components/cart/AddToCartForm.vue";
 import { apiMessage, currency, imageUrl } from "../utils/catalog";
 import { toast } from "../utils/feedback";
+import { setSeo } from "../utils/seo";
 
 const route = useRoute();
 const product = ref(null);
@@ -16,8 +17,15 @@ async function load() {
   product.value = null;
   try {
     product.value = (await catalogApi.product(route.params.slug)).data;
+    setSeo({
+      title: product.value.name,
+      description: (product.value.description || `Conheça ${product.value.name} na Pensei em Você Doces, em Joinville, SC.`).slice(0, 160),
+      path: route.path,
+      image: imageUrl(product.value.images?.[0]?.image) || undefined,
+    });
   } catch (err) {
     error.value = apiMessage(err);
+    setSeo({ path: route.path, noindex: true });
     toast(error.value, "error");
   } finally {
     loading.value = false;
