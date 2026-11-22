@@ -13,10 +13,10 @@ const loading = ref(false)
 onMounted(async () => {
   loading.value = true
   try {
-    const products = await Promise.all(cart.lines.map(line =>
-      catalogApi.products({ page_size: 100 }).then(({ data }) =>
-        (data.results || []).find(item => item.id === line.product_id))))
-    for (const product of products) if (product) details.value[product.id] = product
+    const { data } = await catalogApi.products({ page_size: 100 })
+    for (const product of data.results || []) {
+      if (cart.lines.some(line => line.product_id === product.id)) details.value[product.id] = product
+    }
   } catch (err) { error.value = apiMessage(err) }
   finally { loading.value = false }
 })
