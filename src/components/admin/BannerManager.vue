@@ -1,10 +1,11 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 import { commercialApi } from '../../api/commercialApi'
 import { adminCatalogApi } from '../../api/adminCatalogApi'
 import { apiMessage, imageUrl } from '../../utils/catalog'
 
 const items = ref([])
+const editorElement = ref(null)
 const search = ref('')
 const visible = computed(() => items.value.filter(item =>
   item.title.toLocaleLowerCase('pt-BR').includes(search.value.toLocaleLowerCase('pt-BR'))))
@@ -20,10 +21,12 @@ async function load() {
   try { const { data } = await commercialApi.banners(); items.value = data.results || data }
   catch (err) { error.value = apiMessage(err) }
 }
-function edit(item) {
+async function edit(item) {
   editing.value = item
   Object.assign(form, { title: item.title, subtitle: item.subtitle,
     link_path: item.link_path, is_active: item.is_active, sort_order: item.sort_order })
+  await nextTick()
+  editorElement.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 function reset() {
   editing.value = null
@@ -56,7 +59,7 @@ onMounted(load)
     <h2>Banners da vitrine</h2>
     <p class="muted">Somente banners com imagem e conteúdo autorizado devem ser publicados.</p>
     <p v-if="error" role="alert" class="error">{{ error }}</p>
-    <form class="card" @submit.prevent="save">
+    <form ref="editorElement" class="card editor" @submit.prevent="save">
       <h3>{{ editing ? 'Editar banner' : 'Novo banner' }}</h3>
       <label class="field">Título<input v-model.trim="form.title" required maxlength="160" /></label>
       <label class="field">Texto curto<input v-model.trim="form.subtitle" maxlength="220" /></label>
@@ -88,6 +91,7 @@ onMounted(load)
 </template>
 <style scoped>
 .manager, form { display: grid; gap: 1rem; }
+.editor { scroll-margin-top: 115px; }
 .banner-item { display: grid; grid-template-columns: minmax(145px, .45fr) minmax(0, 1fr);
   align-items: center; gap: 1.4rem; }
 .banner-photo { aspect-ratio: 4 / 3; border-radius: 16px; display: grid; place-items: center;

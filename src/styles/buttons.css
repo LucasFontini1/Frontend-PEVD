@@ -56,3 +56,9 @@
   :where(.button-row, .actions, .buttons) { gap: .5rem; }
   :where(.button-row > button, .actions > button) { flex-grow: 1; }
 }
+
+/* Consistência em formulários e botões de ações secundárias. */
+:where(.card > form, .card form) { min-width: 0; }
+:where(button, a.button-outline, a.button-danger, a.button-ghost) { max-width: 100%; }
+:where(button, a.button-outline):focus-visible { outline: 3px solid var(--color-primary); outline-offset: 3px; }
+@media (hover: none) { :where(button, .button-outline):hover { transform: none; } }
