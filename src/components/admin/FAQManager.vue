@@ -1,0 +1,70 @@
+<script setup>
+import { onMounted, reactive, ref } from 'vue'
+import { commercialApi } from '../../api/commercialApi'
+import { apiMessage } from '../../utils/catalog'
+const faqs = ref([])
+const current = ref(null)
+const form = reactive({ question: '', answer: '', sort_order: 0, published: false })
+const error = ref('')
+const busy = ref(false)
+async function load() {
+  error.value = ''
+  try { const { data } = await commercialApi.faqs(); faqs.value = data.results || data }
+  catch (err) { error.value = apiMessage(err) }
+}
+function edit(faq) {
+  current.value = faq
+  Object.assign(form, faq)
+}
+function reset() {
+  current.value = null
+  Object.assign(form, { question: '', answer: '', sort_order: 0, published: false })
+}
+async function save() {
+  busy.value = true; error.value = ''
+  try {
+    if (current.value) await commercialApi.updateFaq(current.value.id, { ...form })
+    else await commercialApi.createFaq({ ...form })
+    reset(); await load()
+  } catch (err) { error.value = apiMessage(err) }
+  finally { busy.value = false }
+}
+async function unpublish(id) {
+  if (!confirm('Retirar esta pergunta da página pública?')) return
+  try { await commercialApi.unpublishFaq(id); await load() }
+  catch (err) { error.value = apiMessage(err) }
+}
+onMounted(load)
+</script>
+<template>
+  <section class="manager">
+    <h2>Perguntas frequentes</h2>
+    <p class="muted">Publique somente informações confirmadas pela proprietária.</p>
+    <p v-if="error" role="alert" class="error">{{ error }}</p>
+    <form class="card form" @submit.prevent="save">
+      <h3>{{ current ? 'Editar pergunta' : 'Nova pergunta' }}</h3>
+      <label class="field">Pergunta<input v-model.trim="form.question" maxlength="240" required /></label>
+      <label class="field">Resposta<textarea v-model.trim="form.answer" rows="4" required /></label>
+      <label class="field">Ordem<input v-model.number="form.sort_order" type="number" min="0" /></label>
+      <label><input v-model="form.published" type="checkbox" /> Publicar no site</label>
+      <div class="actions">
+        <button class="button" :disabled="busy">{{ busy ? 'Salvando...' : 'Salvar pergunta' }}</button>
+        <button v-if="current" type="button" @click="reset">Cancelar edição</button>
+      </div>
+    </form>
+    <article v-for="faq in faqs" :key="faq.id" class="card">
+      <strong>{{ faq.question }}</strong>
+      <p>{{ faq.answer }}</p>
+      <p class="muted">{{ faq.published ? 'Publicada' : 'Rascunho' }}</p>
+      <div class="actions">
+        <button @click="edit(faq)">Editar</button>
+        <button v-if="faq.published" @click="unpublish(faq.id)">Despublicar</button>
+      </div>
+    </article>
+  </section>
+</template>
+<style scoped>
+.manager, .form { display: grid; gap: 1rem; }
+textarea { padding: .75rem; border: 1px solid var(--color-border); border-radius: 8px; }
+.actions { display: flex; gap: .8rem; flex-wrap: wrap; }
+</style>
