@@ -1,3 +1,5 @@
+> **Fase 4 — Atendimento:** FAQ pesquisável, contato, tickets privados, orçamento e painel com dados reais implementados. Consulte [docs/FASE4.md](docs/FASE4.md). Não há chat em tempo real, email fictício nem receita estimada. Requer backend Fase 4 e homologação antes de main.
+
 > **Fase 2 — Vitrine e gestão de catálogo:** consulte [docs/FASE2.md](docs/FASE2.md). As rotas `/cardapio`, `/categoria/:slug`, `/produto/:slug` e `/admin` consultam APIs reais. Sem produtos fictícios, sem carrinho/checkout da Fase 3.
 
 # Pensei em Você Doces — Frontend
