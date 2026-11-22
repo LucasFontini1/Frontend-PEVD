@@ -9,21 +9,31 @@ export const api = axios.create({ baseURL, withCredentials: true })
 export const sessionApi = axios.create({ baseURL, withCredentials: true })
 let accessToken = null
 let refreshing = null
+let csrfToken = ''
+let csrfRequest = null
+async function ensureCsrf() {
+  if (csrfToken) return csrfToken
+  if (!csrfRequest) csrfRequest = sessionApi.get('token/csrf/')
+    .then(({ data }) => { csrfToken = data.csrf_token; return csrfToken })
+    .finally(() => { csrfRequest = null })
+  return csrfRequest
+}
 export function setAccessToken(token) { accessToken = token || null }
 function getCsrfToken() {
-  return document.cookie.split('; ').find(x => x.startsWith('pv_csrf='))?.split('=').slice(1).join('=') || ''
+  return csrfToken || document.cookie.split('; ').find(x => x.startsWith('pv_csrf='))?.split('=').slice(1).join('=') || ''
 }
+export async function prepareCsrf() { await ensureCsrf() }
 export function csrfHeader() { return { 'X-CSRFToken': getCsrfToken() } }
 export async function renewSession() {
   if (!refreshing) {
-    refreshing = sessionApi.post('token/refresh/', {}, { headers: csrfHeader() })
+    refreshing = ensureCsrf().then(() => sessionApi.post('token/refresh/', {}, { headers: csrfHeader() }))
       .then(({ data }) => { setAccessToken(data.access); return data.access })
       .finally(() => { refreshing = null })
   }
   return refreshing
 }
 export async function endSession() {
-  try { await sessionApi.post('token/logout/', {}, { headers: csrfHeader() }) }
+  try { await ensureCsrf(); await sessionApi.post('token/logout/', {}, { headers: csrfHeader() }) }
   finally { setAccessToken(null) }
 }
 api.interceptors.request.use(config => {
