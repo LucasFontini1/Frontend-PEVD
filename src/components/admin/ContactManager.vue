@@ -36,7 +36,7 @@ onMounted(load)
       <p><strong>{{ item.name }}</strong> · {{ item.email }}</p>
       <p class="body">{{ item.message }}</p>
       <p>{{ item.handled_at ? 'Tratado' : 'Aguardando atendimento' }}</p>
-      <button v-if="!item.handled_at" :disabled="busy" @click="markHandled(item.id)">Marcar como tratado</button>
+      <button v-if="!item.handled_at" type="button" class="button-outline" :disabled="busy" @click="markHandled(item.id)">Marcar como tratado</button>
     </article>
   </section>
 </template>

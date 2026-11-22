@@ -7,7 +7,7 @@ const auth = useAuthStore()
     <RouterLink to="/"><span aria-hidden="true">⌂</span>Início</RouterLink>
     <RouterLink to="/cardapio"><span aria-hidden="true">▦</span>Cardápio</RouterLink>
     <RouterLink to="/carrinho" class="cart"><span aria-hidden="true">♡</span>Carrinho</RouterLink>
-    <RouterLink to="/atendimento"><span aria-hidden="true">?</span>Ajuda</RouterLink>
+    <RouterLink to="/tutorial"><span aria-hidden="true">?</span>Ajuda</RouterLink>
     <RouterLink v-if="auth.user?.is_superuser" to="/admin"><span aria-hidden="true">⚙</span>Painel</RouterLink>
     <RouterLink v-else-if="auth.isAuthenticated" to="/meus-pedidos"><span aria-hidden="true">♙</span>Pedidos</RouterLink>
     <RouterLink v-else to="/entrar"><span aria-hidden="true">♙</span>Conta</RouterLink>

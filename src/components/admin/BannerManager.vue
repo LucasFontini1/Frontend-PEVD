@@ -1,10 +1,11 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 import { commercialApi } from '../../api/commercialApi'
 import { adminCatalogApi } from '../../api/adminCatalogApi'
 import { apiMessage, imageUrl } from '../../utils/catalog'
 
 const items = ref([])
+const editorElement = ref(null)
 const search = ref('')
 const visible = computed(() => items.value.filter(item =>
   item.title.toLocaleLowerCase('pt-BR').includes(search.value.toLocaleLowerCase('pt-BR'))))
@@ -20,10 +21,12 @@ async function load() {
   try { const { data } = await commercialApi.banners(); items.value = data.results || data }
   catch (err) { error.value = apiMessage(err) }
 }
-function edit(item) {
+async function edit(item) {
   editing.value = item
   Object.assign(form, { title: item.title, subtitle: item.subtitle,
     link_path: item.link_path, is_active: item.is_active, sort_order: item.sort_order })
+  await nextTick()
+  editorElement.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 function reset() {
   editing.value = null
@@ -56,7 +59,7 @@ onMounted(load)
     <h2>Banners da vitrine</h2>
     <p class="muted">Somente banners com imagem e conteúdo autorizado devem ser publicados.</p>
     <p v-if="error" role="alert" class="error">{{ error }}</p>
-    <form class="card" @submit.prevent="save">
+    <form ref="editorElement" class="card editor" @submit.prevent="save">
       <h3>{{ editing ? 'Editar banner' : 'Novo banner' }}</h3>
       <label class="field">Título<input v-model.trim="form.title" required maxlength="160" /></label>
       <label class="field">Texto curto<input v-model.trim="form.subtitle" maxlength="220" /></label>
@@ -70,16 +73,33 @@ onMounted(load)
     <label class="field">Pesquisar banner pelo título
       <input v-model.trim="search" type="search" placeholder="Título do banner" />
     </label>
-    <article v-for="item in visible" :key="item.id" class="card">
-      <img v-if="imageUrl(item.image)" :src="imageUrl(item.image)" :alt="item.title" class="preview" />
+    <article v-for="item in visible" :key="item.id" class="card banner-item">
+      <div class="banner-photo">
+        <img v-if="imageUrl(item.image)" :src="imageUrl(item.image)" :alt="item.title" class="preview" />
+        <span v-else class="muted">Sem imagem</span>
+      </div>
+      <div class="banner-info">
       <h3>{{ item.title }}</h3><p>{{ item.subtitle }}</p>
-      <p>{{ item.link_path }} · {{ item.is_active ? 'Publicado' : 'Rascunho' }}</p>
-      <button @click="edit(item)">Editar</button>
-      <button v-if="item.is_active" @click="unpublish(item.id)">Despublicar</button>
+      <p class="muted">{{ item.link_path }} · <span class="status">{{ item.is_active ? 'Publicado' : 'Rascunho' }}</span></p>
+      <div class="actions">
+      <button type="button" class="button-outline" @click="edit(item)">Editar</button>
+      <button v-if="item.is_active" type="button" class="button-danger" @click="unpublish(item.id)">Despublicar</button>
+      </div>
+      </div>
     </article>
   </section>
 </template>
 <style scoped>
 .manager, form { display: grid; gap: 1rem; }
-.preview { max-height: 150px; width: 100%; object-fit: contain; }
+.editor { scroll-margin-top: 115px; }
+.banner-item { display: grid; grid-template-columns: minmax(145px, .45fr) minmax(0, 1fr);
+  align-items: center; gap: 1.4rem; }
+.banner-photo { aspect-ratio: 4 / 3; border-radius: 16px; display: grid; place-items: center;
+  overflow: hidden; background: var(--color-soft); }
+.preview { height: 100%; width: 100%; object-fit: contain; }
+.banner-info { min-width: 0; }
+.banner-info p { overflow-wrap: anywhere; }
+.actions { display: flex; flex-wrap: wrap; gap: .6rem; }
+.status { color: var(--color-primary-hover); font-weight: 800; }
+@media(max-width: 650px) { .banner-item { grid-template-columns: 1fr; } .banner-photo { max-height: 200px; } }
 </style>

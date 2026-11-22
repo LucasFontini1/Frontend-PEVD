@@ -29,6 +29,7 @@ async function logout() { await auth.logout(); await router.push('/') }
         <RouterLink to="/cardapio">Cardápio</RouterLink>
         <RouterLink to="/encomendas-personalizadas">Personalizados</RouterLink>
         <RouterLink to="/atendimento">Atendimento</RouterLink>
+        <RouterLink to="/tutorial">Como usar</RouterLink>
         <RouterLink v-if="auth.isAuthenticated" to="/meus-pedidos">Meus pedidos</RouterLink>
         <RouterLink v-if="auth.user?.is_superuser" to="/admin">Painel</RouterLink>
       </div>

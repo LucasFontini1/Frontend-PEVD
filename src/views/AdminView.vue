@@ -1,5 +1,6 @@
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { adminCatalogApi } from '../api/adminCatalogApi'
 import { apiMessage } from '../utils/catalog'
 import CategoryEditor from '../components/admin/CategoryEditor.vue'
@@ -16,7 +17,21 @@ import QuoteManager from '../components/admin/QuoteManager.vue'
 import BannerManager from '../components/admin/BannerManager.vue'
 import ContactManager from '../components/admin/ContactManager.vue'
 
-const tab = ref('dashboard')
+const route = useRoute()
+const adminTabs = ['dashboard', 'faq', 'tickets', 'quotes', 'contacts', 'banners',
+  'products', 'categories', 'brand', 'orders', 'schedule']
+const tab = ref(adminTabs.includes(route.query.secao) ? route.query.secao : 'dashboard')
+const contentElement = ref(null)
+async function selectTab(key) {
+  tab.value = key
+  editing.value = false
+  mediaProduct.value = null
+  await nextTick()
+  contentElement.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+watch(() => route.query.secao, value => {
+  if (adminTabs.includes(value)) { tab.value = value; editing.value = false; mediaProduct.value = null }
+})
 const categories = ref([])
 const products = ref([])
 const selected = ref(null)
@@ -100,14 +115,15 @@ onMounted(load)
       <button v-for="[key, title] in [
         ['dashboard', 'Visão geral'], ['faq', 'FAQ'], ['tickets', 'Atendimento'],
         ['quotes', 'Orçamentos'], ['contacts', 'Contatos'], ['banners', 'Banners'],
-      ]" :key="key" :aria-pressed="tab === key" @click="tab = key; editing = false; mediaProduct = null">{{ title }}</button>
-      <button :aria-pressed="tab === 'products'" @click="tab = 'products'; editing = false; mediaProduct = null">Produtos</button>
-      <button :aria-pressed="tab === 'categories'" @click="tab = 'categories'; editing = false; mediaProduct = null">Categorias</button>
-      <button :aria-pressed="tab === 'brand'" @click="tab = 'brand'; editing = false; mediaProduct = null">Marca</button>
-      <button :aria-pressed="tab === 'orders'" @click="tab = 'orders'; editing = false; mediaProduct = null">Pedidos</button>
-      <button :aria-pressed="tab === 'schedule'" @click="tab = 'schedule'; editing = false; mediaProduct = null">Agenda e entrega</button>
+      ]" :key="key" :aria-pressed="tab === key" @click="selectTab(key)">{{ title }}</button>
+      <button :aria-pressed="tab === 'products'" @click="selectTab('products')">Produtos</button>
+      <button :aria-pressed="tab === 'categories'" @click="selectTab('categories')">Categorias</button>
+      <button :aria-pressed="tab === 'brand'" @click="selectTab('brand')">Marca</button>
+      <button :aria-pressed="tab === 'orders'" @click="selectTab('orders')">Pedidos</button>
+      <button :aria-pressed="tab === 'schedule'" @click="selectTab('schedule')">Agenda e entrega</button>
+      <RouterLink class="tutorial-link" to="/tutorial">Como usar o painel ↗</RouterLink>
     </aside>
-    <div class="admin-content">
+    <div ref="contentElement" class="admin-content">
     <p v-if="loading" role="status">Carregando dados...</p>
     <p v-if="error" role="alert" class="error">{{ error }}</p>
     <DashboardPanel v-if="tab === 'dashboard'" />
@@ -166,8 +182,10 @@ onMounted(load)
 .tabs button { border: 0; background: transparent; color: var(--color-text);
   font-weight: 700; text-align: left; border-radius: 10px; padding: .8rem .9rem; }
 .tabs button:hover { background: var(--color-soft); }
+.tutorial-link { display: block; padding: .8rem .9rem; margin-top: .5rem; border-top: 1px solid var(--color-border);
+  text-decoration: none; font-weight: 800; font-size: .85rem; }
 .tabs button[aria-pressed=true] { background: var(--color-primary); color: white; }
-.admin-content { min-width: 0; display: grid; gap: 1rem; }
+.admin-content { min-width: 0; display: grid; gap: 1rem; scroll-margin-top: 115px; }
 .catalog-tools { display: flex; align-items: end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
 .catalog-tools .field { flex: 1; min-width: 220px; }
 .actions { display: flex; flex-wrap: wrap; gap: .5rem; }
