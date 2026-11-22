@@ -9,8 +9,14 @@ import OptionsEditor from '../components/admin/OptionsEditor.vue'
 import BrandEditor from '../components/admin/BrandEditor.vue'
 import OrderManager from '../components/admin/OrderManager.vue'
 import ScheduleManager from '../components/admin/ScheduleManager.vue'
+import DashboardPanel from '../components/admin/DashboardPanel.vue'
+import FAQManager from '../components/admin/FAQManager.vue'
+import TicketManager from '../components/admin/TicketManager.vue'
+import QuoteManager from '../components/admin/QuoteManager.vue'
+import BannerManager from '../components/admin/BannerManager.vue'
+import ContactManager from '../components/admin/ContactManager.vue'
 
-const tab = ref('products')
+const tab = ref('dashboard')
 const categories = ref([])
 const products = ref([])
 const selected = ref(null)
@@ -43,9 +49,13 @@ onMounted(load)
 </script>
 <template>
   <section class="admin">
-    <h1>Administração do catálogo</h1>
+    <h1>Painel comercial</h1>
     <p>Apenas superusuários autorizados podem alterar o cardápio.</p>
     <div class="tabs">
+      <button v-for="[key, title] in [
+        ['dashboard', 'Visão geral'], ['faq', 'FAQ'], ['tickets', 'Atendimento'],
+        ['quotes', 'Orçamentos'], ['contacts', 'Contatos'], ['banners', 'Banners'],
+      ]" :key="key" :aria-pressed="tab === key" @click="tab = key; editing = false; mediaProduct = null">{{ title }}</button>
       <button :aria-pressed="tab === 'products'" @click="tab = 'products'; editing = false; mediaProduct = null">Produtos</button>
       <button :aria-pressed="tab === 'categories'" @click="tab = 'categories'; editing = false; mediaProduct = null">Categorias</button>
       <button :aria-pressed="tab === 'brand'" @click="tab = 'brand'; editing = false; mediaProduct = null">Marca</button>
@@ -54,6 +64,12 @@ onMounted(load)
     </div>
     <p v-if="loading" role="status">Carregando dados...</p>
     <p v-if="error" role="alert" class="error">{{ error }}</p>
+    <DashboardPanel v-if="tab === 'dashboard'" />
+    <FAQManager v-if="tab === 'faq'" />
+    <TicketManager v-if="tab === 'tickets'" />
+    <QuoteManager v-if="tab === 'quotes'" />
+    <ContactManager v-if="tab === 'contacts'" />
+    <BannerManager v-if="tab === 'banners'" />
     <BrandEditor v-if="tab === 'brand'" />
     <OrderManager v-if="tab === 'orders'" />
     <ScheduleManager v-if="tab === 'schedule'" />

@@ -7,7 +7,8 @@ import { apiMessage, imageUrl } from '../../utils/catalog'
 
 const brandStore = useBrandStore()
 const form = reactive({
-  name: '', background_color: '#FFF5E9', primary_color: '#C96680', heading_color: '#704438',
+  name: '', business_email: '', phone: '', pickup_address: '', instagram_url: '',
+  announcement: '', response_hours: null, background_color: '#FFF5E9', primary_color: '#C96680', heading_color: '#704438',
 })
 const logo = ref(null)
 const preview = ref(null)
@@ -42,6 +43,12 @@ async function submit() {
   <form class="card brand-editor" @submit.prevent="submit">
     <h2>Identidade visual</h2>
     <label class="field">Nome da loja<input v-model.trim="form.name" maxlength="120" required /></label>
+    <label class="field">E-mail comercial<input v-model.trim="form.business_email" type="email" /></label>
+    <label class="field">Telefone<input v-model.trim="form.phone" maxlength="24" /></label>
+    <label class="field">Endereço de retirada<input v-model.trim="form.pickup_address" maxlength="240" /></label>
+    <label class="field">Instagram HTTPS<input v-model.trim="form.instagram_url" type="url" /></label>
+    <label class="field">Barra de anúncio<input v-model.trim="form.announcement" maxlength="220" /></label>
+    <label class="field">Prazo de resposta confirmado (horas, opcional)<input v-model.number="form.response_hours" type="number" min="0" max="32767" /></label>
     <label class="field">Cor de fundo<input v-model="form.background_color" type="color" /></label>
     <label class="field">Cor dos botões<input v-model="form.primary_color" type="color" /></label>
     <label class="field">Cor dos títulos<input v-model="form.heading_color" type="color" /></label>

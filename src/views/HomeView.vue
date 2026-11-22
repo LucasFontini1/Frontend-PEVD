@@ -3,6 +3,10 @@ import { onMounted, ref } from 'vue'
 import { useCatalogStore } from '../stores/catalogStore'
 import CategoryCircle from '../components/catalog/CategoryCircle.vue'
 import ProductGrid from '../components/catalog/ProductGrid.vue'
+import FAQList from '../components/support/FAQList.vue'
+import HomeBanners from '../components/storefront/HomeBanners.vue'
+import { useBrandStore } from '../stores/brandStore'
+const brand = useBrandStore()
 
 const catalog = useCatalogStore()
 const categoryError = ref('')
@@ -13,6 +17,8 @@ onMounted(async () => {
 })
 </script>
 <template>
+  <p v-if="brand.brand.announcement" class="announcement">{{ brand.brand.announcement }}</p>
+  <HomeBanners />
   <section class="hero">
     <p class="eyebrow">Pensei em Você Doces</p>
     <h1>Doces feitos com carinho para cada ocasião.</h1>
@@ -31,8 +37,10 @@ onMounted(async () => {
     <div class="heading"><h2>Doces em destaque</h2><RouterLink to="/cardapio">Ver tudo</RouterLink></div>
     <ProductGrid :products="catalog.products" :loading="catalog.loading" :error="catalog.error" />
   </section>
+  <section class="section"><FAQList /><RouterLink to="/atendimento">Ver atendimento</RouterLink></section>
 </template>
 <style scoped>
+.announcement { background: var(--color-surface); padding: .8rem; text-align: center; border-radius: 12px; }
 .hero { padding: clamp(3rem, 8vw, 6rem) 0; max-width: 760px; }
 .eyebrow { text-transform: uppercase; letter-spacing: .15em; color: var(--color-primary-hover); font-weight: 700; }
 h1 { font-size: clamp(2.2rem, 7vw, 4.4rem); margin: .5rem 0 1rem; }

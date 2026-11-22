@@ -16,6 +16,7 @@ async function logout() { await auth.logout(); await router.push('/') }
       <div class="links">
         <RouterLink to="/">Início</RouterLink>
         <RouterLink to="/cardapio">Cardápio</RouterLink>
+        <RouterLink to="/atendimento">Atendimento</RouterLink>
         <RouterLink to="/carrinho">Carrinho</RouterLink>
         <RouterLink v-if="auth.isAuthenticated" to="/meus-pedidos">Meus pedidos</RouterLink>
         <RouterLink v-if="!auth.isAuthenticated" to="/entrar">Entrar</RouterLink>
