@@ -14,7 +14,12 @@ const cover = computed(() => imageUrl(props.category.image))
   </RouterLink>
 </template>
 <style scoped>
-.category { text-align: center; display: grid; gap: .7rem; text-decoration: none; min-width: 120px; }
-.photo { border-radius: 50%; background: #f1d9cf; width: clamp(96px, 20vw, 150px); aspect-ratio: 1; display: grid; place-items: center; color: #704438; font-size: 3rem; overflow: hidden; margin: auto; }
+.category { text-align: center; display: grid; gap: .8rem; text-decoration: none; min-width: 132px; font-size: .93rem; }
+.category strong { color: var(--color-heading); }
+.photo { border-radius: 50%; background: linear-gradient(145deg,#f6cadb,#ffedf2);
+  width: clamp(105px,14vw,154px); aspect-ratio: 1; display: grid; place-items: center;
+  color: #ba537c; font-size: 3.5rem; overflow: hidden; margin: auto;
+  border: 6px solid white; box-shadow: 0 9px 24px #b4738833; transition: transform .2s; }
+.category:hover .photo { transform: translateY(-5px); }
 .photo img { width: 100%; height: 100%; object-fit: cover; }
 </style>
