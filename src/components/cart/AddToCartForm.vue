@@ -5,11 +5,11 @@ import { useCartStore } from '../../stores/cartStore'
 
 const props = defineProps({ product: { type: Object, required: true } })
 const selected = ref({})
+const quantity = ref(props.product.minimum_quantity)
 watch(() => props.product, value => {
   selected.value = Object.fromEntries(value.option_groups.map(group => [group.id, []]))
   quantity.value = value.minimum_quantity
 }, { immediate: true })
-const quantity = ref(props.product.minimum_quantity)
 const error = ref('')
 const cart = useCartStore()
 const router = useRouter()
