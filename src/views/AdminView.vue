@@ -3,6 +3,8 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { adminCatalogApi } from '../api/adminCatalogApi'
 import { apiMessage } from '../utils/catalog'
+import ConfirmModal from '../components/layout/ConfirmModal.vue'
+import { toast } from '../utils/feedback'
 import CategoryEditor from '../components/admin/CategoryEditor.vue'
 import ProductEditor from '../components/admin/ProductEditor.vue'
 import ProductMediaEditor from '../components/admin/ProductMediaEditor.vue'
@@ -39,6 +41,7 @@ const editing = ref(false)
 const mediaProduct = ref(null)
 const error = ref('')
 const loading = ref(false)
+const pendingDisable = ref(null)
 const search = ref('')
 const pageLimit = 100
 const serverMatches = ref(null)
@@ -92,10 +95,12 @@ async function load() {
 }
 function edit(item = null) { selected.value = item; editing.value = true; mediaProduct.value = null }
 async function saved() { editing.value = false; selected.value = null; await load() }
-async function disable(type, id) {
-  if (!confirm('Desativar este item na loja?')) return
-  try { await adminCatalogApi.disable(type, id); await load() }
-  catch (err) { error.value = apiMessage(err) }
+function disable(type, id) { pendingDisable.value = { type, id } }
+async function confirmDisable() {
+  if (!pendingDisable.value) return
+  const { type, id } = pendingDisable.value
+  try { await adminCatalogApi.disable(type, id); pendingDisable.value = null; toast('Item desativado.'); await load() }
+  catch (err) { error.value = apiMessage(err); toast(error.value, 'error') }
 }
 onMounted(load)
 </script>
@@ -168,6 +173,7 @@ onMounted(load)
     </div>
     </div>
     </div>
+    <ConfirmModal :open="!!pendingDisable" title="Desativar item?" description="O item deixará de aparecer na loja." @confirm="confirmDisable" @cancel="pendingDisable = null" />
   </section>
 </template>
 <style scoped>
