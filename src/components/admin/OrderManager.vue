@@ -2,6 +2,8 @@
 import { computed, onMounted, ref } from 'vue'
 import { orderApi } from '../../api/orderApi'
 import { apiMessage, currency } from '../../utils/catalog'
+import ConfirmModal from '../layout/ConfirmModal.vue'
+import { toast } from '../../utils/feedback'
 const orders = ref([])
 const search = ref('')
 const state = ref('')
@@ -15,15 +17,18 @@ const filtered = computed(() => orders.value.filter(order => {
 const error = ref('')
 const busy = ref(false)
 const reason = ref('')
+const pending = ref(null)
+const selectedStatus = ref({})
 import ManualOrderForm from './ManualOrderForm.vue'
 import CompletedOrdersReport from './CompletedOrdersReport.vue'
 const allowed = {
   aguardando_confirmacao: ['confirmado', 'rejeitado', 'cancelado'],
   confirmado: ['em_preparo', 'cancelado'],
   em_preparo: ['pronto'],
-  pronto: ['concluido'],
+  pronto: ['aguardando_confirmacao', 'confirmado', 'em_preparo', 'concluido', 'cancelado', 'rejeitado'],
 }
 const statuses = [
+  ['aguardando_confirmacao', 'Aguardando'],
   ['confirmado', 'Confirmar'],
   ['rejeitado', 'Rejeitar'],
   ['em_preparo', 'Em preparo'],
@@ -40,19 +45,24 @@ async function load() {
   } catch (err) { error.value = apiMessage(err) }
 }
 async function transition(id, status) {
-  if (!confirm('Confirmar mudança do status deste pedido?')) return
+  pending.value = { id, status, kind: 'status' }
+}
+async function commitAction() {
+  if (!pending.value) return
+  const action = pending.value
   busy.value = true; error.value = ''
-  try { await orderApi.adminTransition(id, status, reason.value); reason.value = ''; await load() }
-  catch (err) { error.value = apiMessage(err) }
+  try {
+    if (action.kind === 'payment') await orderApi.adminPayment(action.id, '')
+    else await orderApi.adminTransition(action.id, action.status, reason.value)
+    pending.value = null
+    reason.value = ''
+    toast(action.kind === 'payment' ? 'Pagamento confirmado.' : 'Status atualizado.')
+    await load()
+  } catch (err) { error.value = apiMessage(err); toast(error.value, 'error') }
   finally { busy.value = false }
 }
-async function markPaid(id) {
-  if (!reason.value.trim()) { error.value = 'Informe uma justificativa para pagamento confirmado.'; return }
-  if (!confirm('Confirma que recebeu o pagamento fora do site?')) return
-  busy.value = true; error.value = ''
-  try { await orderApi.adminPayment(id, reason.value); reason.value = ''; await load() }
-  catch (err) { error.value = apiMessage(err) }
-  finally { busy.value = false }
+function markPaid(id) {
+  pending.value = { id, kind: 'payment' }
 }
 onMounted(load)
 </script>
@@ -86,7 +96,7 @@ onMounted(load)
     </div>
     <p v-if="error" class="error" role="alert">{{ error }}</p>
     <p v-if="!orders.length && !error && view === 'list'">Nenhum pedido registrado.</p>
-    <label class="field">Motivo ou observação da ação<input v-model.trim="reason" maxlength="200" /></label>
+    <label class="field">Observação opcional sobre a mudança<input v-model.trim="reason" maxlength="200" /></label>
     <article v-for="order in filtered" :key="order.public_id" class="card">
       <h3>Pedido {{ order.public_id.slice(0, 8) }}</h3>
       <p><strong>{{ order.customer_name || 'Cliente da plataforma' }}</strong>
@@ -97,12 +107,22 @@ onMounted(load)
       <p>{{ new Date(order.scheduled_at).toLocaleString('pt-BR') }}</p>
       <p v-for="(item, i) in order.items" :key="i">{{ item.quantity }} × {{ item.product_name_snapshot }}</p>
       <div class="buttons">
-        <button v-for="[status, label] in availableTransitions(order)" type="button" class="button-outline" :key="status" :disabled="busy" @click="transition(order.id, status)">{{ label }}</button>
+        <template v-if="order.status === 'pronto'">
+          <label class="field">Alterar situação do pedido
+            <select v-model="selectedStatus[order.id]">
+              <option value="">Selecione um status</option>
+              <option v-for="[status, label] in availableTransitions(order)" :key="status" :value="status">{{ label }}</option>
+            </select>
+          </label>
+          <button type="button" class="button-outline" :disabled="busy || !selectedStatus[order.id]" @click="transition(order.id, selectedStatus[order.id])">Alterar status</button>
+        </template>
+        <button v-else v-for="[status, label] in availableTransitions(order)" type="button" class="button-outline" :key="status" :disabled="busy" @click="transition(order.id, status)">{{ label }}</button>
         <button type="button" class="button" v-if="order.payment_status === 'pendente' && !['rejeitado', 'cancelado'].includes(order.status)" :disabled="busy" @click="markPaid(order.id)">Confirmar pagamento manual</button>
       </div>
     </article>
     <p v-if="!filtered.length && orders.length">Nenhum pedido corresponde à busca.</p>
     </template>
+    <ConfirmModal :open="!!pending" :busy="busy" :title="pending?.kind === 'payment' ? 'Confirmar pagamento manual?' : 'Alterar status do pedido?'" :description="pending?.kind === 'payment' ? 'Confirme somente se recebeu o pagamento fora do site.' : 'A alteração será registrada no histórico.'" @confirm="commitAction" @cancel="pending = null" />
   </section>
 </template>
 <style scoped>
