@@ -93,7 +93,7 @@ async function submit() {
       />
       <label
         ><input v-model="values.accepted_terms" type="checkbox" required />
-        Aceito os termos de uso (texto pendente de revisão).</label
+        Li e aceito os <RouterLink to="/termos-de-uso" target="_blank" rel="noopener noreferrer">Termos de Uso</RouterLink> e li a <RouterLink to="/politica-de-privacidade" target="_blank" rel="noopener noreferrer">Política de Privacidade</RouterLink>.</label
       >
       <p v-if="error" role="alert" class="error">{{ error }}</p>
       <button class="button" type="submit" :disabled="loading">
