@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { adminCatalogApi } from '../api/adminCatalogApi'
 import { apiMessage } from '../utils/catalog'
 import CategoryEditor from '../components/admin/CategoryEditor.vue'
@@ -26,8 +26,38 @@ const error = ref('')
 const loading = ref(false)
 const search = ref('')
 const pageLimit = 100
+const serverMatches = ref(null)
+const searching = ref(false)
+let searchSequence = 0
+let debounce = null
+async function searchCatalog() {
+  const sequence = ++searchSequence
+  const query = search.value.trim()
+  const type = tab.value
+  if (!query || !['products', 'categories'].includes(type)) {
+    serverMatches.value = null
+    searching.value = false
+    return
+  }
+  searching.value = true
+  try {
+    const { data } = await adminCatalogApi.list(type, { page_size: pageLimit, search: query })
+    if (sequence === searchSequence) serverMatches.value = data.results || data
+  } catch (err) {
+    if (sequence === searchSequence) error.value = apiMessage(err)
+  } finally {
+    if (sequence === searchSequence) searching.value = false
+  }
+}
+watch([search, tab], () => {
+  clearTimeout(debounce)
+  ++searchSequence
+  serverMatches.value = null
+  if (!search.value.trim()) { searching.value = false; return }
+  debounce = setTimeout(searchCatalog, 250)
+})
 const visibleItems = computed(() => {
-  const source = tab.value === 'products' ? products.value : categories.value
+  const source = serverMatches.value || (tab.value === 'products' ? products.value : categories.value)
   const q = search.value.toLocaleLowerCase('pt-BR')
   return source.filter(item => item.name.toLocaleLowerCase('pt-BR').includes(q))
 })
@@ -57,15 +87,16 @@ onMounted(load)
 <template>
   <section class="admin">
     <div class="admin-heading">
-      <div><span class="section-eyebrow">Área administrativa</span>
-    <h1>Painel comercial</h1>
-      <p class="muted">Gerencie produtos, pedidos, atendimento e configurações da loja.</p></div>
+      <div>
+        <span class="section-eyebrow">Área administrativa</span>
+        <h1>Painel comercial</h1>
+        <p class="muted">Gerencie produtos, pedidos, atendimento e configurações da loja.</p>
+      </div>
       <RouterLink class="store-link" to="/">Ver minha loja →</RouterLink>
     </div>
     <div class="admin-layout">
     <aside class="tabs" aria-label="Seções administrativas">
       <strong>MENU DA LOJA</strong>
-    <div class="tabs">
       <button v-for="[key, title] in [
         ['dashboard', 'Visão geral'], ['faq', 'FAQ'], ['tickets', 'Atendimento'],
         ['quotes', 'Orçamentos'], ['contacts', 'Contatos'], ['banners', 'Banners'],
@@ -95,7 +126,8 @@ onMounted(load)
         </label>
         <button class="button" @click="edit()">Adicionar {{ tab === 'products' ? 'produto' : 'categoria' }}</button>
       </div>
-      <p v-if="!visibleItems.length" class="muted">Nenhum item encontrado.</p>
+      <p v-if="searching" role="status">Pesquisando no catálogo...</p>
+      <p v-if="!visibleItems.length && !searching" class="muted">Nenhum item encontrado.</p>
       <div v-for="item in visibleItems" :key="item.id" class="item card">
         <div>
           <strong>{{ item.name }}</strong>
