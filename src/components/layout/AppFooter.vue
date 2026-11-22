@@ -1,6 +1,10 @@
+<script setup>
+import { useBrandStore } from '../../stores/brandStore'
+const brand = useBrandStore()
+</script>
 <template>
   <footer class="footer"><div class="container">
-    <strong>Pensei em Você Doces</strong>
+    <strong>{{ brand.brand.name }}</strong>
     <p>Confeitaria artesanal. Informações comerciais e cardápio serão publicados após confirmação.</p>
   </div></footer>
 </template>
