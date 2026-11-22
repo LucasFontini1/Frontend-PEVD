@@ -142,7 +142,7 @@ const steps = computed(() => {
         <span class="number">{{ String(i + 1).padStart(2, "0") }}</span>
         <div>
           <h2>{{ step.title }}</h2>
-          <p>{{ step.description }}</p>
+          <p class="backend-text">{{ step.description }}</p>
           <RouterLink v-if="step.path" class="button-outline" :to="step.path"
             >{{ step.action }} →</RouterLink
           >
