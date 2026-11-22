@@ -40,7 +40,7 @@ onMounted(load)
 <template>
   <section class="report">
     <h2>Relatório de pedidos concluídos</h2>
-    <p class="muted">Os filtros usam a data de criação dos pedidos concluídos. Pagamentos registrados no sistema não substituem conciliação bancária.</p>
+    <p class="muted">Os filtros usam a data de conclusão dos pedidos, registrada no histórico. Pagamentos registrados no sistema não substituem conciliação bancária.</p>
     <form class="filters card" @submit.prevent="load">
       <label class="field">De<input v-model="filters.start" type="date" /></label>
       <label class="field">Até<input v-model="filters.end" type="date" /></label>
@@ -62,7 +62,7 @@ onMounted(load)
             <tr v-for="item in report.results" :key="item.public_id">
               <td>{{ item.public_id.slice(0, 8) }}</td>
               <td>{{ item.customer_name || 'Conta do site' }}</td><td>{{ item.source }}</td>
-              <td>{{ new Date(item.created_at).toLocaleDateString('pt-BR') }}</td>
+              <td>{{ new Date(item.completed_at).toLocaleDateString('pt-BR') }}</td>
               <td>{{ item.payment_status }}</td><td>{{ currency(item.total) }}</td>
             </tr>
           </tbody>
