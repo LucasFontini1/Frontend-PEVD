@@ -22,16 +22,16 @@ onMounted(async () => {
   <p v-if="brand.brand.announcement" class="announcement">{{ brand.brand.announcement }}</p>
   <section class="hero">
     <div class="hero-content">
-      <span class="section-eyebrow">♡ Pensamos em cada detalhe</span>
+      <span class="section-eyebrow"><i class="mdi mdi-heart-outline" aria-hidden="true"></i> Pensamos em cada detalhe</span>
       <h1>Um doce carinho <em>para você.</em></h1>
       <p>Descubra sabores especiais no nosso cardápio. Escolha seus favoritos e encomende pelo site.</p>
       <div class="hero-actions">
-        <RouterLink to="/cardapio" class="button">Explorar cardápio <span aria-hidden="true">→</span></RouterLink>
+        <RouterLink to="/cardapio" class="button">Explorar cardápio <i class="mdi mdi-arrow-right" aria-hidden="true"></i></RouterLink>
         <RouterLink to="/encomendas-personalizadas" class="outline">Encomenda especial</RouterLink>
       </div>
       <div class="hero-details">
-        <span><b>♡</b> Feito com carinho</span>
-        <span><b>✿</b> Para momentos especiais</span>
+        <span><b><i class="mdi mdi-heart-outline" aria-hidden="true"></i></b> Feito com carinho</span>
+        <span><b><i class="mdi mdi-flower-outline" aria-hidden="true"></i></b> Para momentos especiais</span>
       </div>
     </div>
     <div class="hero-art">
@@ -39,11 +39,11 @@ onMounted(async () => {
         <img :src="spotlightImage" alt="Imagem principal da Pensei em Você Doces" />
       </div>
       <div v-else class="hero-placeholder" aria-label="Ilustração de confeitaria">
-        <span aria-hidden="true">♡</span><span aria-hidden="true">✿</span>
+        <span aria-hidden="true"><i class="mdi mdi-heart-outline"></i></span><span aria-hidden="true"><i class="mdi mdi-flower-outline"></i></span>
         <strong>Um mundo mais doce</strong>
       </div>
-      <span aria-hidden="true" class="sparkle one">✧</span>
-      <span aria-hidden="true" class="sparkle two">✿</span>
+      <span aria-hidden="true" class="sparkle one"><i class="mdi mdi-star-four-points-outline"></i></span>
+      <span aria-hidden="true" class="sparkle two"><i class="mdi mdi-flower-outline"></i></span>
     </div>
   </section>
   <HomeBanners />
@@ -71,11 +71,11 @@ onMounted(async () => {
   <section class="special">
     <div>
       <span class="section-eyebrow">Seu momento merece mais</span>
-      <h2>Uma encomenda com a sua cara ♡</h2>
+      <h2>Uma encomenda com a sua cara <i class="mdi mdi-heart-outline" aria-hidden="true"></i></h2>
       <p>Conte sua ideia para a nossa equipe avaliar um orçamento personalizado.</p>
       <RouterLink class="button" to="/encomendas-personalizadas">Pedir orçamento</RouterLink>
     </div>
-    <span aria-hidden="true" class="special-icon">🎂</span>
+    <span aria-hidden="true" class="special-icon"><i class="mdi mdi-cake-variant-outline"></i></span>
   </section>
   <section class="section faq-area">
     <div><span class="section-eyebrow">Precisa de ajuda?</span><h2>Estamos por aqui</h2>

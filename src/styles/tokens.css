@@ -1,4 +1,7 @@
 :root {
+  --font-body: 'Jost', 'Segoe UI', Arial, sans-serif;
+  --font-heading: 'Josefin Sans', 'Jost', Arial, sans-serif;
+  --font-accent: 'Jost', 'Segoe UI', Arial, sans-serif;
   --color-background: #fff9f7;
   --color-primary: #dc5388;
   --color-primary-hover: #b82d69;
